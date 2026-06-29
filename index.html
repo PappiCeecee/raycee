@@ -1,227 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title> Portfolio - Landing-Page  </title>
-    <link rel="icon" href="ROASOD.png" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Inter:wght@300;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root{
-            --background-color: #282c34; /* A dark, subtle background */
-            --accent: #61dafb; /* A bright, modern accent color */
-            --text: rgba(255,255,255,0.95);
-            --muted: rgba(255,255,255,0.75);
-        }
-
-
-                body,html{
-            margin: 0;
-            height: 100vh;
-            background: var(--background-color);
-            display:flex;
-            flex-direction:column;
-            justify-content: center;
-            align-items:center;
-            overflow-x: hidden;
-            font-family: 'Inter', sans-serif;
-            color: var(--text);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-.logo {
-  width:90px;
-  height: 90px;
-  font-size: 20px;
-  letter-spacing: 3px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-weight:900;
-  border-radius: 50%;
-  background: linear-gradient(45deg, var(--accent), #007bff); /* Simpler gradient */
-  color: #ffffff;
-  text-shadow:
-    0 0 8px rgba(0,0,0,0.5); /* Simpler shadow */
-  box-shadow:
-    0 0 15px rgba(97, 218, 251, 0.4); /* Simpler box-shadow */
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tshabalala Raycee — Portfolio</title>
+<link rel="icon" href="ROASOD.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+    --bg:#03060d;
+    --accent:#19a7ff;
+    --accent-bright:#7fe0ff;
+    --accent-deep:#06325c;
+    --text:#eef6ff;
+    --muted:rgba(196,220,245,0.7);
+    --glass:rgba(10,22,46,0.45);
+    --line:rgba(120,190,255,0.22);
 }
-/* Animation */
-@keyframes pulseGlow {
-  0% {
-    box-shadow:
-      0 0 12px #969696,
-      0 0 30px rgba(4, 2, 100, 0.6);
-  }
-  50% {
-    box-shadow:
-      0 0 22px #969696,
-      0 0 55px rgb(11, 2, 95);
-  }
-  100% {
-    box-shadow:
-      0 0 12px #969696,
-      0 0 30px rgba(9, 1, 78, 0.6);
-  }
+*{box-sizing:border-box;}
+*::-webkit-scrollbar{display:none;}
+*{-ms-overflow-style:none; scrollbar-width:none;}
+
+body,html{
+    margin:0;
+    height:100vh;
+    background:var(--bg);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    overflow-x:hidden;
+    font-family:'Inter',sans-serif;
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
 }
-        .blob{
-            position:absolute;
-            border-radius:50%;
-            filter: blur(90px);
-            opacity:0.9;
-            mix-blend-mode: screen;
-            transform: translate3d(0,0,0);
-            will-change: transform;
-            animation: float 10s ease-in-out infinite;
-        }
-        .b1{
-            width:520px;height:520px;
-            left:-10%;
-            top:10%;
-            background: linear-gradient(135deg, #ffffff21, #d42c0e1f);
-            animation-duration: 30s;
-        }
-        .b2{
-            width:420px;height:420px;
-            right:-8%;
-            top:30%;
-            background: linear-gradient(120deg, #000000, #290e0271);
-            animation-duration: 25s;
-            animation-delay: 2s;
-        }
-        .b3{
-            width:360px;height:360px;
-            left:20%;
-            bottom:-10%;
-            background: linear-gradient(90deg, #ffffff5d, #ffffff);
-            animation-duration: 35s;
-            animation-delay: 4s;
-        }
-        @keyframes float{
-            0%{ transform: translateY(0) translateX(0) scale(1); }
-            50%{ transform: translateY(-30px) translateX(20px) scale(1.03); }
-            100%{ transform: translateY(0) translateX(0) scale(1); }
-        }
 
+/* nebula glow background, matching the brand mark */
+.bg{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    background:
+        radial-gradient(900px 650px at 50% 38%, rgba(25,167,255,0.22), transparent 60%),
+        radial-gradient(700px 500px at 50% 100%, rgba(10,40,90,0.3), transparent 70%),
+        var(--bg);
+}
+.stars{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+        radial-gradient(circle at 1px 1px, rgba(255,255,255,0.55) 1px, transparent 1.6px);
+    background-size:30px 30px;
+    opacity:0.35;
+}
+.blob{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(90px);
+    opacity:0.8;
+    mix-blend-mode:screen;
+    will-change:transform;
+    animation:float 26s ease-in-out infinite;
+}
+.b1{ width:520px; height:520px; left:-12%; top:8%;
+    background:linear-gradient(135deg, rgba(25,167,255,0.35), transparent); }
+.b2{ width:420px; height:420px; right:-10%; top:32%; animation-delay:3s;
+    background:linear-gradient(120deg, rgba(127,224,255,0.22), transparent); animation-duration:22s;}
+.b3{ width:360px; height:360px; left:18%; bottom:-12%; animation-delay:5s;
+    background:linear-gradient(90deg, rgba(25,167,255,0.18), transparent); animation-duration:32s;}
+@keyframes float{
+    0%{transform:translateY(0) translateX(0) scale(1);}
+    50%{transform:translateY(-30px) translateX(20px) scale(1.04);}
+    100%{transform:translateY(0) translateX(0) scale(1);}
+}
 
+/* brand mark with rotating halo signature */
+.brand{
+    position:relative;
+    width:96px; height:96px;
+    display:flex; align-items:center; justify-content:center;
+}
+.brand::before{
+    content:'';
+    position:absolute;
+    inset:-12px;
+    border-radius:50%;
+    background:conic-gradient(from 0deg, var(--accent-bright), var(--accent), transparent 60%, var(--accent));
+    filter:blur(12px);
+    opacity:0.75;
+    animation:spinHalo 9s linear infinite;
+}
+@keyframes spinHalo{ to{ transform:rotate(360deg); } }
+.brand img{
+    position:relative;
+    z-index:1;
+    width:90px; height:90px;
+    border-radius:50%;
+    object-fit:cover;
+    box-shadow:0 0 0 2px rgba(255,255,255,0.08), 0 0 25px rgba(25,167,255,0.5);
+    background:#03060d;
+}
 
-        h1{
-            margin:0;
-            font-size: clamp(40px, 7vw, 72px);
-            letter-spacing: 0.6px;
-            font-weight:800; /* Make it bolder */
-            font-family: 'Inter', sans-serif;
-            color:var(--text);
-            text-transform: uppercase;
-            /* Removed text-shadow and text-decoration: overline */
-        }
-        h2{
-            margin:0;
-            font-size: clamp(14px, 2.1vw, 18px);
-            font-weight:600;
-            font-family: 'Inter', sans-serif; /* Consistent font */
-            color:var(--muted);
-        }
+h1{
+    margin:0;
+    font-size:clamp(40px,7vw,72px);
+    letter-spacing:0.4px;
+    font-weight:800;
+    font-family:'Inter',sans-serif;
+    color:var(--text);
+    text-transform:uppercase;
+}
+h2{
+    margin:0;
+    font-size:clamp(14px,2.1vw,18px);
+    font-weight:600;
+    color:var(--muted);
+}
+h3{
+    margin:0;
+    font-family:'Dancing Script',cursive;
+    letter-spacing:1px;
+    font-weight:600;
+    font-size:22px;
+    color:var(--muted);
+}
 
-        h3{
-            margin:0;
-            font-family: 'Dancing Script', cursive;
-            letter-spacing: 1px;
-            font-weight: 600;
-            text-transform: none;
-            font-size: 22px;
-            color: var(--muted);
-        }
+.cta{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    margin-top:20px;
+    padding:13px 30px;
+    border-radius:30px;
+    background:linear-gradient(135deg, var(--accent), var(--accent-bright));
+    color:#031321;
+    text-decoration:none;
+    font-weight:700;
+    letter-spacing:0.6px;
+    box-shadow:0 0 18px rgba(25,167,255,0.45), 0 8px 20px rgba(0,0,0,0.45);
+    transition:transform .3s ease, box-shadow .3s ease;
+    animation:pulse 2.6s infinite ease-in-out;
+}
+@keyframes pulse{
+    0%{ box-shadow:0 0 14px rgba(25,167,255,0.4), 0 8px 20px rgba(0,0,0,0.4); }
+    50%{ box-shadow:0 0 26px rgba(127,224,255,0.6), 0 12px 30px rgba(0,0,0,0.4); }
+    100%{ box-shadow:0 0 14px rgba(25,167,255,0.4), 0 8px 20px rgba(0,0,0,0.4); }
+}
+.cta:hover{ animation-play-state:paused; transform:scale(1.07); }
 
-        .cta{
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            margin-top:20px; /* More spacing */
-            padding:12px 28px; /* Slightly larger padding */
-            border-radius:30px;
-            background:var(--accent); /* Solid accent color */
-            color:white;
-            text-decoration:none;
-            font-family: 'Inter', sans-serif;
-            font-weight:700; /* Bolder text */
-            letter-spacing: 1px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Simpler shadow */
-            transition: transform .3s ease;
-            animation: pulse 2.5s infinite ease-in-out;
-        }
+.links{
+    display:flex;
+    gap:14px;
+    margin-top:6px;
+}
+.links a{
+    font-size:13px;
+    color:var(--muted);
+    text-decoration:none;
+    padding:6px 14px;
+    border:1px solid var(--line);
+    border-radius:20px;
+    transition:.25s;
+}
+.links a:hover{ color:var(--accent-bright); border-color:var(--accent); box-shadow:0 0 12px rgba(25,167,255,0.35); }
 
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); }
-            50% { transform: scale(1.05); box-shadow: 0 12px 30px rgba(97, 218, 251, 0.4); }
-            100% { transform: scale(1); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); }
-        }
+main{
+    position:relative;
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+    padding:20px;
+    text-align:center;
+}
 
-        .cta:hover{
-            animation-play-state: paused;
-            background: #ffffff;
-            color: var(--background-color);
-            transform: scale(1.08);
-        }
-        .cta:active{
-            transform: translateY(-1px);
-        }
+.site-footer{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    z-index:3;
+    padding:1rem;
+    color:var(--muted);
+    font-size:0.85rem;
+    text-align:center;
+}
 
-        /* small subtle footer / hint */
-        .meta{
-            margin-top:8px;
-            font-size:12px;
-            color:rgba(255,255,255,0.55);
-        }
-
-        main {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px; /* Reduced gap */
-            padding: 20px; /* Add some padding */
-            text-align: center; /* Center text within main */
-        }
-
-        .site-footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            z-index: 3;
-            padding: 1rem;
-            color: var(--muted);
-            font-size: 0.9rem;
-            text-align: center;
-        }
-
-        @media (max-width: 600px) {
-            .b1 { width: 300px; height: 300px; left: -20%; }
-            .b2 { width: 250px; height: 250px; right: -15%; }
-            .b3 { width: 200px; height: 200px; left: 10%; }
-            h1 { font-size: 42px; }
-        }
-    </style>
+@media (max-width:600px){
+    .b1{width:300px;height:300px;left:-20%;}
+    .b2{width:250px;height:250px;right:-15%;}
+    .b3{width:200px;height:200px;left:10%;}
+    h1{font-size:42px;}
+}
+</style>
 </head>
 <body>
 
-    <main>
-        <div class="logo">Paρρi_Ceecee</div> <!-- Simplified logo text -->
+<div class="bg" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+</div>
 
-        <div>
-            <h3>ROASOD Owner</h3>
-            <h3>Welcome to my Portfolio</h3>
-            <h1 id="site-title"> Tshabalala Raycee</h1>
-        </div>
 
-        <a class="cta" href="portfolio.html" title="Learn more about ROASOD">Discover</a>
-    </main>
+<main>
+    <div class="brand">
+        <img src="ROASOD.png" alt="ROASOD logo">
+    </div>
 
-    <footer class="site-footer">
-        <p>&copy; 2026 ROASOD-Websites.</p>
-    </footer>
+    <div>
+        <h3>Welcome to my portfolio</h3>
+        <h1 id="site-title">Tshabalala Raycee</h1>
+        <h2> AceCoder </h2>
+    </div>
+
+    <a class="cta" href="portfolio.html" title="View the full portfolio">Discover</a>
+
+    <nav class="links">
+        <a href="portfolio.html">My website</a>
+        <a href="socials.html">Socials</a>
+        <a href="mailto:rayceeblaccreedtshabalala@gmail.com">Contact</a>
+    </nav>
+</main>
+
+<footer class="site-footer" href="https://roasod.vercel.app" >
+    <a>
+        &copy; 2026 ROASOD-Websites.</a>
+</footer>
+
 </body>
 </html>

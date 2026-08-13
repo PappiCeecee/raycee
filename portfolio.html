@@ -10,9 +10,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink: #0B0E13;
-    --surface: #10141C;
-    --surface-2: #151B26;
+    --ink: #000c24;
+    --surface: #041233;
+    --surface-2: #0a1c47;
     --card: rgba(255, 255, 255, 0.03);
     --line: rgba(255,255,255,0.09);
     --line-soft: rgba(255,255,255,0.05);
@@ -120,10 +120,20 @@
     justify-content: space-between;
     gap: 20px;
   }
+.brand{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  text-decoration:none;
+}
+/* Circular logo image holder — used in the nav and footer. Holds the
+   actual ROASOD logo image inside a glowing gradient ring so the
+   uploaded artwork (glowing blue wordmark) is framed consistently with
+   the rest of the site's neon-glass theme. */
 .logo {
-  width:90px;
-  min-width: 90px;
-  height: 90px;
+  width: 52px;
+  min-width: 52px;
+  height: 52px;
   font-size: 20px;
   letter-spacing: 3px;
   display: flex;
@@ -142,6 +152,48 @@
   box-shadow:
     0 0 12px rgba(0,229,255,0.6),
     0 0 30px rgba(76, 0, 255, 0.6);
+  overflow: hidden;
+  flex: none;
+  padding: 3px;
+}
+.logo img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+.logo-sm{ width: 40px; min-width: 40px; height: 40px; }
+@keyframes pulseGlow {
+  0%, 100% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 12px rgba(0,229,255,0.6), 0 0 30px rgba(76,0,255,0.6);
+  }
+  50% {
+    background-position: 100% 50%;
+    box-shadow: 0 0 20px rgba(0,229,255,0.9), 0 0 46px rgba(76,0,255,0.85);
+  }
+}
+
+/* ---------- Glow-border glass utility ----------
+   Applied to card-style elements so their borders pick up the same
+   cyan/blue glow as the ROASOD logo mark, tying the whole theme
+   together instead of leaving cards with a plain flat border. */
+.glow-glass{
+  position: relative;
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  box-shadow:
+    0 0 0 1px rgba(0, 229, 255, 0.12),
+    0 0 24px rgba(0, 229, 255, 0.08),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+  transition: box-shadow .25s ease, border-color .25s ease, transform .2s ease;
+}
+.glow-glass:hover{
+  box-shadow:
+    0 0 0 1px rgba(0, 229, 255, 0.28),
+    0 0 36px rgba(0, 229, 255, 0.16),
+    inset 0 1px 0 rgba(255,255,255,0.06);
 }
   .mark{
     width: 38px; height: 38px;
@@ -192,7 +244,7 @@
     color: #060d1a;
     box-shadow: 0 10px 24px rgba(60, 106, 232, 0.22);
   }
-  .btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 14px 32px rgba(232,118,60,0.32); }
+  .btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 14px 32px rgba(0,229,255,0.32); }
   .btn-ghost{
     background: transparent;
     border-color: var(--line);
@@ -473,7 +525,7 @@
   margin-bottom: 28px;
   transition: border-color .2s ease, transform .2s ease;
 }
-.preview-frame:hover{ border-color: rgba(242,166,90,0.4); transform: translateY(-3px); }
+.preview-frame:hover{ border-color: rgba(0,229,255,0.4); transform: translateY(-3px); }
 
 .preview-bar{
   display:flex;
@@ -501,7 +553,7 @@
   aspect-ratio: 16 / 9;
   overflow: hidden;
   background:
-    radial-gradient(520px 260px at 85% 110%, rgba(242,166,90,0.10), transparent 70%),
+    radial-gradient(520px 260px at 85% 110%, rgba(0,229,255,0.10), transparent 70%),
     var(--surface);
 }
 .preview-shot-img{
@@ -557,7 +609,7 @@
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   padding: 7px 14px;
   border-radius: 999px;
-  box-shadow: 0 8px 20px rgba(232,118,60,0.3);
+  box-shadow: 0 8px 20px rgba(0,229,255,0.3);
 }
 
 /* mobile */
@@ -696,25 +748,42 @@
     display:flex;
     align-items:center;
     gap: 10px;
-    background: #1e2530;
-    border: 1px solid var(--line);
+    background: rgba(4, 18, 51, 0.6);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid rgba(37, 211, 102, 0.35);
     padding: 12px 18px 12px 14px;
     border-radius: 999px;
     text-decoration: none;
     color: var(--text);
     font-size: 13.5px;
     font-weight: 600;
-    box-shadow: 0 14px 30px rgba(0,0,0,0.4);
-    transition: transform .2s ease, border-color .2s ease;
+    box-shadow:
+      0 14px 30px rgba(0,0,0,0.4),
+      0 0 0 1px rgba(37, 211, 102, 0.15),
+      0 0 24px rgba(37, 211, 102, 0.18);
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
   }
-  .wa-float:hover{ transform: translateY(-3px); border-color: var(--accent); }
+  .wa-float:hover{
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    box-shadow:
+      0 18px 36px rgba(0,0,0,0.45),
+      0 0 0 1px rgba(0, 229, 255, 0.3),
+      0 0 32px rgba(0, 229, 255, 0.22);
+  }
   .wa-dot{
-    width: 30px; height: 30px;
+    width: 32px; height: 32px;
     border-radius: 50%;
-    background: #25D366;
+    background: rgba(37, 211, 102, 0.22);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(37, 211, 102, 0.5);
+    box-shadow: 0 0 14px rgba(37, 211, 102, 0.35);
     display:flex; align-items:center; justify-content:center;
     flex: none;
   }
+  .wa-dot svg{ width: 17px; height: 17px; }
 
   /* ---------- Reveal ---------- */
   .reveal{ opacity:0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
@@ -770,9 +839,9 @@
   <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
     <defs>
       <radialGradient id="sun" cx="50%" cy="100%" r="70%">
-        <stop offset="0%" stop-color="#E8763C" stop-opacity="0.28"/>
-        <stop offset="45%" stop-color="#F2A65A" stop-opacity="0.10"/>
-        <stop offset="100%" stop-color="#0B0E13" stop-opacity="0"/>
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.22"/>
+        <stop offset="45%" stop-color="#3cb2e8" stop-opacity="0.09"/>
+        <stop offset="100%" stop-color="#000c24" stop-opacity="0"/>
       </radialGradient>
     </defs>
     <rect width="1200" height="800" fill="url(#sun)"/>
@@ -783,8 +852,8 @@
 <header class="nav">
   <div class="nav-inner">
     <a class="brand" href="#top">
-      <div class="mark">R</div>
-      <div class="brand-name">ROASOD</div>
+      <div class="logo logo-sm"><img src="ROASOD.png" alt="ROASOD logo"></div>
+      <div class="brand-name">Raycee Tshabalala</div>
     </a>
     <nav class="nav-links" id="navLinks">
       <a href="#about">About</a>
@@ -843,14 +912,14 @@
         <h2>People buy from people. Then they stay for the systems.</h2>
       </div>
       <div class="about-grid">
-        <div class="about-card reveal">
+        <div class="about-card glow-glass reveal">
           <span class="tag">Founder</span>
           <h3>About Me</h3>
           <p>I am a digital strategist and developer focused on building tools that turn attention into revenue.</p>
           <p>As the founder of ROASOD, I design and implement AI-powered systems, responsive websites, and automation workflows that help businesses work smarter. From developing WhatsApp bots like "Frank" to launching conversion-optimised platforms, my approach combines technical execution with business strategy.</p>
           <p>I believe in using data, design, and automation to create substantial impact with minimal overhead. Let's build something that scales.</p>
         </div>
-        <div class="about-card reveal">
+        <div class="about-card glow-glass reveal">
           <span class="tag">The Agency</span>
           <h3>About ROASOD</h3>
           <p>ROASOD — "Rising Of A Son Of GOD" — is a boutique digital agency that builds scalable web platforms and intelligent automation for growth-focused businesses.</p>
@@ -875,7 +944,7 @@
         <p>Three disciplines, one outcome — digital platforms that convert.</p>
       </div>
       <div class="card-grid">
-        <div class="service-card reveal">
+        <div class="service-card glow-glass reveal">
           <div class="service-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </div>
@@ -887,7 +956,7 @@
             <li>Booking &amp; payment integrations</li>
           </ul>
         </div>
-        <div class="service-card reveal">
+        <div class="service-card glow-glass reveal">
           <div class="service-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </div>
@@ -899,7 +968,7 @@
             <li>Meta API integrations</li>
           </ul>
         </div>
-        <div class="service-card reveal">
+        <div class="service-card glow-glass reveal">
           <div class="service-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 20V10M12 20V4M20 20v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </div>
@@ -943,7 +1012,7 @@
     </div>
   </section>
 
-<a class="preview-frame reveal" href="https://roasod.vercel.app" target="_blank" rel="noopener" aria-label="Open live preview of a ROASOD business website">
+<a class="preview-frame glow-glass reveal" href="https://roasod.vercel.app" target="_blank" rel="noopener" aria-label="Open live preview of a ROASOD business website">
   <div class="preview-bar">
     <div class="preview-dots"><span></span><span></span><span></span></div>
     <div class="preview-address">roasod.com</div>
@@ -968,7 +1037,7 @@
         <p>Proof beats promises. Add real client outcomes here as projects wrap up.</p>
       </div>
       <div class="work-grid">
-        <div class="work-card reveal">
+        <div class="work-card glow-glass reveal">
           <div class="work-top">
             <h3>[Client name]</h3>
             <span class="work-metric">+XX% leads</span>
@@ -976,7 +1045,7 @@
           <p>Short description of the project, the problem solved, and the platform delivered.</p>
           <span class="work-placeholder-tag">Add your first case study →</span>
         </div>
-        <div class="work-card reveal">
+        <div class="work-card glow-glass reveal">
           <div class="work-top">
             <h3>[Client name]</h3>
             <span class="work-metric">XX hrs saved / mo</span>
@@ -1014,14 +1083,14 @@
         <h2>What clients say</h2>
       </div>
       <div class="card-grid" style="grid-template-columns: repeat(2,1fr);">
-        <div class="testi-card reveal">
+        <div class="testi-card glow-glass reveal">
           <p class="quote">"Add a short quote from a happy client here once your first project wraps up."</p>
           <div class="testi-meta">
             <div class="testi-avatar"></div>
             <span>[Client name], [Company]</span>
           </div>
         </div>
-        <div class="testi-card reveal">
+        <div class="testi-card glow-glass reveal">
           <p class="quote">"A second testimonial builds trust fast — swap this in as soon as you have one."</p>
           <div class="testi-meta">
             <div class="testi-avatar"></div>
@@ -1103,7 +1172,7 @@
             </div>
             <div><b>Email us</b><span>rayceeblaccreedtshabalala@gmail.com</span></div>
           </a>
-          <a class="contact-line" href="https://wa.me/27000000000" target="_blank" rel="noopener">
+          <a class="contact-line" href="https://wa.me/27602600910" target="_blank" rel="noopener">
             <div class="ico">
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 20l1.5-4.5A8 8 0 1112 20a7.9 7.9 0 01-4-1.1L4 20z" stroke="currentColor" stroke-width="2"/></svg>
             </div>
@@ -1127,7 +1196,7 @@
     <div class="footer-grid">
       <div>
         <a class="brand" href="#top">
-          <div class="mark" style="width:32px;height:32px;font-size:13px;">R</div>
+          <div class="logo logo-sm"><img src="ROASOD.png" alt="ROASOD logo"></div>
           <div class="brand-name">ROASOD</div>
         </a>
         <p class="footer-copy">&copy; 2026 ROASOD-Websites. All rights reserved.</p>
@@ -1144,9 +1213,9 @@
   </div>
 </footer>
 
-<a class="wa-float" href="https://wa.me/27000000000" target="_blank" rel="noopener">
+<a href="https://wa.me/27602600910?text=Hi%20Frank%2C%20I%27d%20like%20to%20chat%20about%20a%20project" target="_blank" rel="noopener noreferrer" id="whatsapp-widget" class="wa-float" aria-label="Chat with Frank on WhatsApp">
   <div class="wa-dot">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 20l1.5-4.5A8 8 0 1112 20a7.9 7.9 0 01-4-1.1L4 20z" stroke="#0B0E13" stroke-width="2"/></svg>
+    <svg viewBox="0 0 32 32" fill="#25D366" xmlns="http://www.w3.org/2000/svg"><path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.386.703 4.605 1.912 6.47L4 29l7.72-1.877A11.94 11.94 0 0016.001 27C22.628 27 28 21.627 28 15S22.628 3 16.001 3zm0 21.818c-1.98 0-3.87-.52-5.51-1.5l-.395-.234-4.583 1.114 1.126-4.462-.257-.412A9.77 9.77 0 016.182 15c0-5.415 4.404-9.818 9.819-9.818S25.818 9.585 25.818 15 21.416 24.818 16.001 24.818zm5.42-7.36c-.297-.148-1.756-.867-2.029-.966-.273-.099-.472-.148-.67.148-.198.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.148-1.253-.462-2.387-1.472-.882-.787-1.478-1.76-1.651-2.057-.173-.297-.018-.457.13-.605.134-.133.297-.347.446-.52.148-.173.198-.297.297-.495.099-.198.05-.372-.025-.52-.074-.148-.67-1.614-.918-2.212-.242-.582-.487-.503-.67-.512l-.57-.01c-.198 0-.52.074-.792.372-.273.297-1.04 1.016-1.04 2.478 0 1.462 1.065 2.874 1.213 3.072.148.198 2.096 3.2 5.078 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.756-.718 2.004-1.412.248-.694.248-1.288.173-1.412-.074-.124-.272-.198-.57-.347z"/></svg>
   </div>
   <span class="wa-label">Chat with Frank</span>
 </a>

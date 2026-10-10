@@ -504,8 +504,9 @@
     .landing-item{ opacity:1; }
   }
 </style>
+<link rel="stylesheet" href="roasod-ui.css">
 </head>
-<body class="is-loading">
+<body class="is-loading ro-mono">
 
 <div id="progress"></div>
 
@@ -771,6 +772,45 @@
     </div>
   </section>
 
+  <!-- BENTO -->
+  <section id="bento">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow">Under the hood</div>
+        <h2>Built live, shipped fast</h2>
+        <p>A peek at how a ROASOD project comes together.</p>
+      </div>
+      <div class="bento-grid">
+        <div class="bento-cell bento-a tilt reveal">
+          <p class="bento-label">Deploy</p>
+          <h3 style="font-size:22px;">From commit to live in seconds</h3>
+          <div id="bento-terminal-out" class="bento-terminal" aria-label="Terminal preview (illustrative)"><span class="bento-cursor"></span></div>
+        </div>
+        <div class="bento-cell bento-b tilt reveal">
+          <p class="bento-label"><span class="bento-live-dot"></span>Always on</p>
+          <div class="bento-counter">24/7</div>
+          <p>AI-powered support on WhatsApp</p>
+        </div>
+        <div class="bento-cell bento-c tilt reveal">
+          <p class="bento-label">Try it</p>
+          <div class="bento-toggle-row" role="switch" tabindex="0" aria-checked="true"><span>WhatsApp assistant</span><span class="bento-switch"></span></div>
+          <div class="bento-toggle-row" role="switch" tabindex="0" aria-checked="false"><span>Lead routing</span><span class="bento-switch"></span></div>
+          <div class="bento-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+        <div class="bento-cell bento-d tilt reveal">
+          <p class="bento-label">Typical build</p>
+          <div class="bento-counter">2–4 wk</div>
+          <p>From discovery to launch</p>
+        </div>
+        <div class="bento-cell bento-e tilt reveal">
+          <p class="bento-label">Shortcut</p>
+          <h3 style="font-size:20px;margin-bottom:8px;">Press Ctrl / ⌘ + K</h3>
+          <p>Jump to any section instantly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- LIVE PREVIEW -->
   <section class="tight">
     <div class="container">
@@ -788,80 +828,6 @@
           <span class="preview-visit">Visit live site <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </div>
       </a>
-    </div>
-  </section>
-
-  <!-- WORK -->
-  <section id="work" class="alt-bg">
-    <div class="ghost" data-parallax="0.1" aria-hidden="true">WORK</div>
-    <div class="container">
-      <div class="section-head reveal">
-        <div class="eyebrow">Selected Work</div>
-        <h2>Case studies</h2>
-        <p>Proof beats promises. Add real client outcomes here as projects wrap up.</p>
-      </div>
-      <div class="work-grid">
-        <div class="work-card tilt reveal">
-          <div class="work-top">
-            <h3>[Client name]</h3>
-            <span class="work-metric">+XX% leads</span>
-          </div>
-          <p>Short description of the project, the problem solved, and the platform delivered.</p>
-          <span class="work-placeholder-tag">Add your first case study →</span>
-        </div>
-        <div class="work-card tilt reveal">
-          <div class="work-top">
-            <h3>[Client name]</h3>
-            <span class="work-metric">XX hrs saved / mo</span>
-          </div>
-          <p>Short description of the automation or WhatsApp bot built and its measured impact.</p>
-          <span class="work-placeholder-tag">Add your second case study →</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TECH STACK -->
-  <section class="tight">
-    <div class="container">
-      <div class="section-head reveal" style="margin-bottom:28px;">
-        <div class="eyebrow">Tech Stack</div>
-        <h2>Tools we build with</h2>
-      </div>
-      <div class="stack-row reveal">
-        <span class="stack-chip">React</span>
-        <span class="stack-chip">Node.js</span>
-        <span class="stack-chip">Supabase</span>
-        <span class="stack-chip">Meta WhatsApp API</span>
-        <span class="stack-chip">Vercel</span>
-        <span class="stack-chip">Figma</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- TESTIMONIALS -->
-  <section class="alt-bg">
-    <div class="container">
-      <div class="section-head reveal">
-        <div class="eyebrow">Testimonials</div>
-        <h2>What clients say</h2>
-      </div>
-      <div class="card-grid" id="testi-grid" style="grid-template-columns:repeat(2,1fr);">
-        <div class="testi-card tilt reveal">
-          <p class="quote">"Add a short quote from a happy client here once your first project wraps up."</p>
-          <div class="testi-meta">
-            <div class="testi-avatar"></div>
-            <span>[Client name], [Company]</span>
-          </div>
-        </div>
-        <div class="testi-card tilt reveal">
-          <p class="quote">"A second testimonial builds trust fast — swap this in as soon as you have one."</p>
-          <div class="testi-meta">
-            <div class="testi-avatar"></div>
-            <span>[Client name], [Company]</span>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -1211,5 +1177,19 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 });
 </script>
+<script>
+window.ROASOD_PALETTE = [
+  { g: 'Jump to', t: 'About', h: 'who we are', u: '#about' },
+  { g: 'Jump to', t: 'Services', h: 'what we build', u: '#services' },
+  { g: 'Jump to', t: 'Process', h: 'how a project runs', u: '#process' },
+  { g: 'Jump to', t: 'Work', h: 'case studies', u: '#work' },
+  { g: 'Jump to', t: 'FAQ', h: 'common questions', u: '#faq' },
+  { g: 'Jump to', t: 'Contact', h: 'start a project', u: '#contact' },
+  { g: 'Pages', t: 'Socials', u: 'socials.html' },
+  { g: 'Actions', t: 'Chat with Frank on WhatsApp', h: 'opens WhatsApp', u: 'https://wa.me/27602600910?text=Hi%20Frank%2C%20I%27d%20like%20to%20chat%20about%20a%20project', ext: true },
+  { g: 'Actions', t: 'Send an email', u: 'mailto:rayceeblaccreedtshabalala@gmail.com' }
+];
+</script>
+<script src="roasod-ui.js" defer></script>
 </body>
 </html>

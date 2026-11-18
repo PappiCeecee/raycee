@@ -1,559 +1,1679 @@
-from pathlib import Path
-import zipfile, textwrap, os
 
-out = Path("/mnt/data/roasod-portfolio")
-out.mkdir(exist_ok=True)
-
-html = r'''<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f7fafb">
-  <meta name="description" content="Raycee Tshabalala — developer and founder of ROASOD. Building high-performance websites, backend systems and AI-powered automation for ambitious businesses.">
-  <meta property="og:title" content="Raycee Tshabalala — Developer & Founder">
-  <meta property="og:description" content="Digital products, intelligent systems and purposeful engineering.">
-  <meta property="og:type" content="website">
-  <title>Raycee Tshabalala — Developer & Founder of ROASOD</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b0e">
+  <meta name="description" content="Raycee Tshabalala — Web Developer, Backend Developer and Builder of Agents, Workflows, Automations and Custom Tools.">
+  <title>Raycee Tshabalala | Developer </title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --paper:#f7fafb; --paper-2:#edf1f3; --ink:#090d10; --ink-2:#11171c;
-      --panel:#171e24; --panel-2:#202a31; --muted:#68747b; --muted-light:#aab5bb;
-      --line:#dce3e7; --line-dark:rgba(255,255,255,.15); --cyan:#02cfe0;
-      --cyan-soft:rgba(2,207,224,.14); --max:1240px; --gutter:clamp(20px,4vw,64px);
-      --display:"Oswald",Impact,sans-serif; --body:"Manrope",Arial,sans-serif;
-      --mono:"DM Mono",monospace; --ease:cubic-bezier(.2,.75,.2,1);
+      --bg: #080b0e;
+      --surface: #10161b;
+      --surface-2: #151d23;
+      --text: #f1f5f7;
+      --muted: #929da5;
+      --accent: #00d5e8;
+      --border: rgba(255,255,255,.11);
+      --header: rgba(8,11,14,.82);
+      --max: 1200px;
     }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth;scroll-padding-top:88px}
-    body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-    body.menu-open{overflow:hidden}
-    a{color:inherit;text-decoration:none}
-    button,input,textarea{font:inherit}
-    button{color:inherit}
-    ::selection{background:var(--cyan);color:var(--ink)}
-    .progress{position:fixed;z-index:1000;inset:0 auto auto 0;width:100%;height:3px;transform:scaleX(0);transform-origin:left;background:var(--cyan)}
-    .grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.16;background-image:linear-gradient(rgba(9,13,16,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(9,13,16,.035) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(to bottom,black,transparent 85%)}
-    .wrap{width:min(var(--max),calc(100% - 2*var(--gutter)));margin-inline:auto}
-    .mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em}
-    .eyebrow{display:flex;align-items:center;gap:11px;font:500 11px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#65747c}
-    .eyebrow:before{content:"";width:24px;height:1px;background:currentColor}
-    .eyebrow.light{color:#aebbc1}
-    .display{font-family:var(--display);font-weight:600;text-transform:uppercase;letter-spacing:-.035em;line-height:.94}
-    .muted{color:var(--muted)}
-    .site-header{height:78px;position:sticky;top:0;z-index:100;background:rgba(247,250,251,.86);backdrop-filter:blur(18px);border-bottom:1px solid rgba(9,13,16,.09)}
-    .nav{height:100%;display:flex;align-items:center;justify-content:space-between;gap:24px}
-    .brand{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:15px;letter-spacing:-.04em}
-    .brand-mark{width:27px;height:27px;border:1.5px solid var(--ink);display:grid;place-items:center;position:relative;font:700 13px var(--display)}
-    .brand-mark:after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:var(--cyan);right:-3px;top:-3px}
-    .brand small{display:block;font:10px var(--mono);letter-spacing:.12em;color:var(--muted);margin-top:2px}
-    .nav-links{display:flex;align-items:center;gap:clamp(18px,3vw,38px)}
-    .nav-links a{font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#5e6a71;transition:color .2s}
-    .nav-links a:hover{color:var(--ink)}
-    .nav-cta{display:inline-flex;align-items:center;gap:12px;border:1px solid var(--ink);padding:11px 15px;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;transition:.25s}
-    .nav-cta:hover{background:var(--ink);color:white}
-    .nav-cta span{color:#00aebe}
-    .menu-btn{display:none;background:none;border:0;padding:10px;cursor:pointer}
-    .menu-btn i{display:block;width:23px;height:1px;background:var(--ink);margin:6px}
-    .mobile-menu{position:fixed;inset:0;z-index:200;background:var(--paper);padding:24px var(--gutter);display:flex;flex-direction:column;transform:translateY(-102%);transition:transform .55s var(--ease)}
-    .mobile-menu.open{transform:translateY(0)}
-    .mobile-menu-top{display:flex;justify-content:space-between;align-items:center}
-    .mobile-menu nav{display:flex;flex:1;flex-direction:column;justify-content:center;gap:10px}
-    .mobile-menu nav a{font:600 clamp(42px,12vw,76px)/.98 var(--display);text-transform:uppercase}
-    .mobile-menu nav a:hover{color:#00aebe}
-    .mobile-close{background:none;border:1px solid var(--line);width:42px;height:42px;font-size:24px;cursor:pointer}
-    .hero{min-height:calc(100svh - 78px);position:relative;isolation:isolate;display:flex;align-items:center;overflow:hidden;padding:clamp(76px,10vh,130px) 0 110px}
-    .hero-lines{position:absolute;inset:0;z-index:-1;opacity:.65;pointer-events:none}
-    .hero-lines svg{width:100%;height:100%;position:absolute;inset:0}
-    .hero-lines path{fill:none;stroke:#dce5e9;stroke-width:1}
-    .hero-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(270px,.7fr);gap:5vw;align-items:center}
-    .hero-kicker{margin-bottom:26px}
-    .hero-title{font-size:clamp(64px,10.5vw,148px);margin:0;max-width:850px}
-    .hero-title .accent{color:#00b9c9}
-    .hero-sub{font-size:clamp(16px,1.45vw,19px);line-height:1.75;max-width:600px;margin:28px 0 0;color:#59666d}
-    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
-    .button{display:inline-flex;align-items:center;justify-content:center;gap:20px;min-height:50px;padding:0 19px;border:1px solid var(--ink);background:var(--ink);color:white;font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;transition:transform .25s var(--ease),background .25s,color .25s}
-    .button:hover{transform:translateY(-3px);background:var(--cyan);border-color:var(--cyan);color:var(--ink)}
-    .button.secondary{background:transparent;color:var(--ink)}
-    .button.secondary:hover{background:var(--ink);color:white;border-color:var(--ink)}
-    .button .arrow{font-size:17px;color:var(--cyan)}
-    .hero-side{align-self:end;display:flex;flex-direction:column;gap:14px;max-width:360px;margin:70px 0 0 auto}
-    .identity-card{background:var(--ink);color:white;padding:25px;position:relative;min-height:220px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
-    .identity-card:before{content:"";position:absolute;width:210px;height:210px;border:1px solid rgba(2,207,224,.35);border-radius:50%;right:-75px;top:-70px;box-shadow:0 0 0 25px rgba(2,207,224,.035),0 0 0 50px rgba(2,207,224,.025)}
-    .identity-card:after{content:"";position:absolute;width:90px;height:90px;border:1px solid rgba(2,207,224,.45);border-radius:50%;right:-15px;top:-10px}
-    .identity-card .id{font:11px var(--mono);letter-spacing:.15em;color:#9cabb2}
-    .identity-card strong{font:600 34px/.98 var(--display);text-transform:uppercase;max-width:230px;position:relative}
-    .identity-card small{font:10px var(--mono);letter-spacing:.13em;color:var(--cyan);text-transform:uppercase}
-    .side-note{border:1px solid var(--line);padding:17px 20px;display:flex;justify-content:space-between;align-items:center;gap:14px;font:11px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:#647179}
-    .live-dot{width:7px;height:7px;background:#00b987;border-radius:50%;box-shadow:0 0 0 5px rgba(0,185,135,.1);flex:none}
-    .hero-foot{position:absolute;bottom:0;left:0;right:0;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:20px;padding:17px var(--gutter);font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#7b878d}
-    .hero-foot b{color:var(--ink);font-weight:500}
-    .ticker{overflow:hidden;background:var(--ink);color:white;border-block:1px solid var(--ink)}
-    .ticker-track{display:flex;width:max-content;animation:marquee 32s linear infinite}
-    .ticker-track span{padding:17px 26px;font:11px var(--mono);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
-    .ticker-track span:after{content:"✳";color:var(--cyan);margin-left:52px}
-    @keyframes marquee{to{transform:translateX(-50%)}}
-    section{position:relative;padding:clamp(84px,10vw,140px) 0}
-    .section-head{display:flex;justify-content:space-between;align-items:end;gap:40px;margin-bottom:54px}
-    .section-head h2{font-size:clamp(44px,6.2vw,82px);margin:16px 0 0}
-    .section-head p{max-width:370px;font-size:14px;line-height:1.8;margin-bottom:5px}
-    .about{background:var(--paper)}
-    .about-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(35px,8vw,110px);align-items:start}
-    .about-stamp{background:var(--cyan);min-height:340px;padding:25px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
-    .about-stamp:after{content:"R";position:absolute;font:700 310px/.8 var(--display);color:rgba(9,13,16,.08);right:-8px;bottom:-30px}
-    .about-stamp .stamp-top,.about-stamp .stamp-bottom{font:10px var(--mono);letter-spacing:.15em;text-transform:uppercase;position:relative;z-index:1}
-    .about-stamp strong{font:600 clamp(34px,4vw,55px)/.95 var(--display);text-transform:uppercase;max-width:250px;position:relative;z-index:1}
-    .about-copy h3{font:600 clamp(28px,3.3vw,43px)/1.15 var(--body);letter-spacing:-.05em;margin:0 0 24px;max-width:720px}
-    .about-copy p{color:#5f6b72;font-size:15px;line-height:1.9;margin:0 0 17px;max-width:740px}
-    .about-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:38px;border-top:1px solid var(--line);padding-top:22px}
-    .fact strong{display:block;font:500 23px var(--display);text-transform:uppercase}
-    .fact span{font:10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#829097}
-    .dark-section{background:var(--ink);color:white;overflow:hidden}
-    .dark-section:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 85% 10%,rgba(2,207,224,.09),transparent 38%),linear-gradient(135deg,transparent 60%,rgba(255,255,255,.025))}
-    .dark-section .section-head p{color:#9eabb2}
-    .dark-section .eyebrow{color:#91a1a9}
-    .services-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line-dark);border-left:1px solid var(--line-dark)}
-    .service{min-height:300px;padding:30px;border-right:1px solid var(--line-dark);border-bottom:1px solid var(--line-dark);position:relative;transition:background .3s}
-    .service:hover{background:rgba(255,255,255,.045)}
-    .service-num{font:11px var(--mono);color:var(--cyan);letter-spacing:.12em}
-    .service-icon{width:45px;height:45px;border:1px solid rgba(2,207,224,.35);display:grid;place-items:center;color:var(--cyan);font-size:19px;margin:34px 0 22px}
-    .service h3{font:500 27px/.98 var(--display);text-transform:uppercase;margin:0 0 14px}
-    .service p{font-size:13px;line-height:1.8;color:#a6b2b8;max-width:330px}
-    .service-list{list-style:none;padding:0;margin:19px 0 0;display:flex;flex-wrap:wrap;gap:7px}
-    .service-list li{font:9px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:#9eabb2;border:1px solid rgba(255,255,255,.13);padding:7px 8px}
-    .system{background:var(--paper-2)}
-    .system-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    .system-card{min-height:245px;background:var(--paper);border:1px solid #dbe2e5;padding:28px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;transition:transform .35s var(--ease),border-color .35s}
-    .system-card:hover{transform:translateY(-5px);border-color:#9caeb5}
-    .system-card.large{grid-row:span 2;min-height:506px;background:var(--ink);color:white}
-    .system-card.large:after{content:"SYSTEM";position:absolute;right:-22px;bottom:30px;font:600 clamp(70px,11vw,150px)/.8 var(--display);color:rgba(255,255,255,.055)}
-    .system-label{font:10px var(--mono);letter-spacing:.13em;text-transform:uppercase;color:#7b8990}
-    .system-card.large .system-label{color:var(--cyan)}
-    .system-card h3{font:500 clamp(30px,4vw,52px)/.94 var(--display);text-transform:uppercase;max-width:420px;margin:30px 0 14px;position:relative;z-index:1}
-    .system-card p{font-size:13px;line-height:1.8;color:#7a878e;max-width:390px;position:relative;z-index:1}
-    .system-card.large p{color:#aab5bb}
-    .system-orbit{width:150px;height:150px;border:1px solid rgba(2,207,224,.35);border-radius:50%;position:absolute;right:35px;bottom:35px;box-shadow:0 0 0 20px rgba(2,207,224,.035),0 0 0 40px rgba(2,207,224,.025)}
-    .system-orbit:before,.system-orbit:after{content:"";position:absolute;inset:22px;border:1px solid rgba(2,207,224,.25);border-radius:50%}
-    .system-orbit:after{inset:55px;background:var(--cyan);box-shadow:0 0 30px rgba(2,207,224,.45)}
-    .system-arrow{font:22px var(--mono);color:#00aebe;align-self:flex-end}
-    .process{background:var(--paper)}
-    .process-list{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line)}
-    .process-step{padding:30px;min-height:260px;border-right:1px solid var(--line);position:relative}
-    .process-step:last-child{border-right:0}
-    .process-step:before{content:"";position:absolute;top:0;left:0;width:100%;height:3px;background:var(--cyan);transform:scaleX(0);transform-origin:left;transition:transform .45s var(--ease)}
-    .process-step:hover:before{transform:scaleX(1)}
-    .process-step .number{font:12px var(--mono);color:#00aebe}
-    .process-step h3{font:500 34px var(--display);text-transform:uppercase;margin:55px 0 12px}
-    .process-step p{font-size:13px;line-height:1.8;color:#66737a}
-    .work{background:var(--ink);color:white}
-    .work .section-head p{color:#9eabb2}
-    .work-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}
-    .work-feature{min-height:420px;background:linear-gradient(140deg,#202b32,#0e1418);border:1px solid rgba(255,255,255,.14);padding:30px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
-    .work-feature:after{content:"ROASOD";position:absolute;right:-18px;bottom:35px;font:600 clamp(68px,10vw,145px)/.8 var(--display);color:rgba(255,255,255,.055);white-space:nowrap}
-    .work-feature .work-type,.work-small .work-type{font:10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
-    .work-feature h3{font:500 clamp(45px,6vw,76px)/.9 var(--display);text-transform:uppercase;max-width:620px;margin:30px 0 15px;position:relative;z-index:1}
-    .work-feature p{font-size:13px;line-height:1.8;color:#a8b3b9;max-width:470px;position:relative;z-index:1}
-    .work-link{display:inline-flex;gap:18px;align-items:center;font:11px var(--mono);letter-spacing:.1em;text-transform:uppercase;position:relative;z-index:1}
-    .work-link b{color:var(--cyan);font-size:18px}
-    .work-side{display:grid;grid-template-rows:1fr 1fr;gap:16px}
-    .work-small{background:#171e24;border:1px solid rgba(255,255,255,.14);padding:26px;display:flex;flex-direction:column;justify-content:space-between;min-height:200px}
-    .work-small h3{font:500 30px/.98 var(--display);text-transform:uppercase;margin:24px 0 10px}
-    .work-small p{font-size:12px;line-height:1.7;color:#9eabb2}
-    .work-note{margin-top:18px;font:10px var(--mono);color:#84929a;letter-spacing:.07em}
-    .stack{background:var(--paper-2)}
-    .stack-list{display:flex;flex-wrap:wrap;gap:10px}
-    .stack-chip{padding:12px 16px;border:1px solid #cfd9de;background:var(--paper);font:10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#59676e;transition:.25s}
-    .stack-chip:hover{background:var(--ink);border-color:var(--ink);color:white;transform:translateY(-3px)}
-    .faq{background:var(--paper)}
-    .faq-layout{display:grid;grid-template-columns:.7fr 1.3fr;gap:70px}
-    .faq-title h2{font-size:clamp(48px,6vw,76px);margin:18px 0}
-    .faq-title p{font-size:13px;line-height:1.8;color:#68747b;max-width:290px}
-    .faq-item{border-bottom:1px solid var(--line)}
-    .faq-question{width:100%;display:flex;justify-content:space-between;align-items:center;gap:20px;text-align:left;background:none;border:0;padding:23px 0;cursor:pointer;font-weight:700;font-size:15px}
-    .faq-question span:last-child{font:20px var(--mono);color:#00aebe;transition:transform .25s}
-    .faq-answer{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--ease)}
-    .faq-answer>div{overflow:hidden}
-    .faq-answer p{font-size:13px;line-height:1.85;color:#66737a;max-width:650px;padding:0 30px 22px 0;margin:0}
-    .faq-item.open .faq-answer{grid-template-rows:1fr}
-    .faq-item.open .faq-question span:last-child{transform:rotate(45deg)}
-    .contact{background:var(--cyan);color:var(--ink);overflow:hidden}
-    .contact:before{content:"LET'S BUILD";position:absolute;right:-30px;bottom:-.1em;font:600 clamp(100px,20vw,280px)/.8 var(--display);color:rgba(9,13,16,.055);white-space:nowrap;pointer-events:none}
-    .contact-grid{display:grid;grid-template-columns:1fr .85fr;gap:70px;position:relative;z-index:1}
-    .contact h2{font-size:clamp(58px,9vw,116px);margin:22px 0 24px;max-width:720px}
-    .contact-intro{font-size:15px;line-height:1.8;max-width:470px;color:rgba(9,13,16,.72)}
-    .contact-links{display:flex;flex-direction:column;gap:0;margin-top:40px;border-top:1px solid rgba(9,13,16,.2)}
-    .contact-links a{display:flex;justify-content:space-between;gap:15px;padding:17px 0;border-bottom:1px solid rgba(9,13,16,.2);font:11px var(--mono);letter-spacing:.1em;text-transform:uppercase}
-    .contact-links a span:last-child{font-size:17px}
-    .contact-form{background:var(--ink);color:white;padding:30px;display:flex;flex-direction:column;gap:16px;align-self:start}
-    .contact-form label{font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#9eabb2}
-    .contact-form input,.contact-form textarea{width:100%;margin-top:8px;padding:13px 0;background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.22);color:white;outline:none;border-radius:0;font:13px var(--body)}
-    .contact-form input:focus,.contact-form textarea:focus{border-color:var(--cyan)}
-    .contact-form textarea{min-height:92px;resize:vertical}
-    .contact-form input::placeholder,.contact-form textarea::placeholder{color:#66737a}
-    .contact-form button{margin-top:8px;background:var(--cyan);color:var(--ink);border:0;padding:15px;text-align:left;font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;display:flex;justify-content:space-between}
-    .contact-form button:hover{background:white}
-    .form-note{font:10px var(--mono);color:#8c9aa1;line-height:1.6}
-    footer{background:var(--ink);color:white;padding:26px 0}
-    .footer-row{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
-    .footer-copy,.footer-meta{font:10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#84929a}
-    .footer-copy b{color:white;font-weight:500}
-    .footer-top{font:10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:white}
-    .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
-    .reveal.visible{opacity:1;transform:none}
-    .delay-1{transition-delay:.12s}.delay-2{transition-delay:.22s}.delay-3{transition-delay:.32s}
-    @media(max-width:900px){
-      .hero-grid{grid-template-columns:1fr .7fr;gap:25px}.hero-side{margin-top:35px}
-      .services-grid{grid-template-columns:repeat(2,1fr)}
-      .about-grid{gap:35px}.faq-layout{gap:35px}
-      .contact-grid{gap:30px}
+
+    body.light {
+      --bg: #f4f7f8;
+      --surface: #ffffff;
+      --surface-2: #eaf0f2;
+      --text: #10171b;
+      --muted: #58666d;
+      --border: rgba(0,0,0,.12);
+      --header: rgba(244,247,248,.88);
     }
-    @media(max-width:700px){
-      .site-header{height:68px}.nav-links,.nav>.nav-cta{display:none}.menu-btn{display:block}
-      .hero{min-height:unset;padding:85px 0 105px}.hero-grid{grid-template-columns:1fr}
-      .hero-title{font-size:clamp(64px,17vw,108px)}.hero-side{margin:30px 0 0;max-width:100%}
-      .identity-card{min-height:180px}.hero-foot{font-size:8px;flex-wrap:wrap}
-      .section-head{display:block;margin-bottom:35px}.section-head p{margin-top:18px}
-      .about-grid,.faq-layout,.contact-grid{grid-template-columns:1fr}
-      .about-stamp{min-height:230px}.about-facts{gap:8px}
-      .services-grid{grid-template-columns:1fr}.service{min-height:260px}
-      .system-grid{grid-template-columns:1fr}.system-card.large{grid-row:auto;min-height:390px}
-      .process-list{grid-template-columns:1fr}.process-step{min-height:210px;border-right:0;border-bottom:1px solid var(--line)}
-      .process-step:last-child{border-bottom:0}.process-step h3{margin-top:35px}
-      .work-grid{grid-template-columns:1fr}.work-feature{min-height:360px}.work-side{grid-template-rows:auto}
-      .contact-form{padding:23px}.contact h2{font-size:clamp(58px,15vw,92px)}
-      .footer-row{align-items:flex-start;flex-direction:column}
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    @media(prefers-reduced-motion:reduce){
-      *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-      .reveal{opacity:1;transform:none}
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Manrope', sans-serif;
+      overflow-x: hidden;
+      transition: background .3s, color .3s;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: #001014;
+    }
+
+    .container {
+      width: min(var(--max), calc(100% - 48px));
+      margin: auto;
+    }
+
+    .mono,
+    .eyebrow,
+    .section-index,
+    .nav-label {
+      font-family: 'DM Mono', monospace;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 25px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -2;
+      opacity: .16;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 75px 75px;
+      mask-image: linear-gradient(to bottom, black, transparent 90%);
+    }
+
+    .glow {
+      position: absolute;
+      width: 450px;
+      height: 450px;
+      border-radius: 50%;
+      background: rgba(0,213,232,.10);
+      filter: blur(110px);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* NAVIGATION */
+
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: var(--header);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      width: min(var(--max), calc(100% - 48px));
+      height: 76px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      font-family: 'Oswald', sans-serif;
+      font-size: 23px;
+      font-weight: 600;
+      letter-spacing: .04em;
+    }
+
+    .brand span {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 27px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .theme-toggle,
+    .menu-toggle {
+      width: 39px;
+      height: 39px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 50%;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    .menu-toggle {
+      display: none;
+      border-radius: 8px;
+      font-size: 20px;
+    }
+
+    /* BUTTONS */
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 0 22px;
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 800;
+      transition: .25s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #001014;
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    /* HERO */
+
+    .hero {
+      min-height: 820px;
+      padding: 160px 0 100px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-glow {
+      top: 150px;
+      right: -120px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      align-items: center;
+      gap: 70px;
+    }
+
+    .hero h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(55px, 7vw, 94px);
+      font-weight: 600;
+      line-height: .99;
+      letter-spacing: -.025em;
+      text-transform: uppercase;
+      margin: 28px 0;
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+    }
+
+    .hero-description {
+      max-width: 560px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.95;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 13px;
+      flex-wrap: wrap;
+      margin-top: 34px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 35px;
+      margin-top: 55px;
+      padding-top: 25px;
+      border-top: 1px solid var(--border);
+    }
+
+    .meta-item strong {
+      display: block;
+      font-family: 'Oswald', sans-serif;
+      font-size: 25px;
+      font-weight: 500;
+    }
+
+    .meta-item span {
+      display: block;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-top: 5px;
+    }
+
+    /* PROFILE IMAGE */
+
+    .hero-visual {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .photo-frame {
+      position: relative;
+      width: min(100%, 390px);
+      aspect-ratio: 4 / 5;
+      padding: 9px;
+      background: var(--surface);
+      border: 1px solid rgba(0,213,232,.55);
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(0,213,232,.10);
+    }
+
+    .photo-frame::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(0,213,232,.2);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .photo-frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 35%;
+      filter: saturate(.85);
+      transition: transform .7s ease, filter .7s ease;
+    }
+
+    .photo-frame:hover img {
+      transform: scale(1.045);
+      filter: saturate(1);
+    }
+
+    .photo-corner {
+      position: absolute;
+      width: 45px;
+      height: 45px;
+      border-color: var(--accent);
+      border-style: solid;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .photo-corner.top-left {
+      top: 0;
+      left: 0;
+      border-width: 2px 0 0 2px;
+    }
+
+    .photo-corner.bottom-right {
+      bottom: 0;
+      right: 0;
+      border-width: 0 2px 2px 0;
+    }
+
+    .photo-caption {
+      width: min(100%, 390px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 2px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .photo-caption h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 21px;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .photo-caption span {
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: .12em;
+    }
+
+    .availability {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      margin-top: 18px;
+    }
+
+    .availability i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #39d98a;
+      box-shadow: 0 0 12px #39d98a;
+    }
+
+    /* SECTIONS */
+
+    section.content-section {
+      padding: 120px 0;
+      border-top: 1px solid var(--border);
+      position: relative;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 30px;
+      margin-bottom: 55px;
+    }
+
+    .section-head h2 {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(43px, 6vw, 72px);
+      font-weight: 500;
+      line-height: 1;
+      text-transform: uppercase;
+      margin-top: 18px;
+    }
+
+    .section-head p {
+      max-width: 390px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    /* ABOUT */
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      gap: 80px;
+    }
+
+    .about-number {
+      font-family: 'Oswald', sans-serif;
+      font-size: 130px;
+      line-height: 1;
+      color: var(--accent);
+      opacity: .8;
+    }
+
+    .about-copy h3 {
+      font-size: 24px;
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+
+    .about-copy p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 2;
+      margin-bottom: 18px;
+    }
+
+    .about-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 30px;
+    }
+
+    .tag {
+      padding: 9px 13px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    /* SERVICES */
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .service-card {
+      min-height: 285px;
+      padding: 30px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: .3s ease;
+    }
+
+    .service-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-7px);
+    }
+
+    .service-number {
+      font-family: 'DM Mono', monospace;
+      color: var(--accent);
+      font-size: 11px;
+    }
+
+    .service-card h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 27px;
+      font-weight: 500;
+      text-transform: uppercase;
+      margin: 40px 0 15px;
+    }
+
+    .service-card p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    .service-arrow {
+      position: absolute;
+      right: 28px;
+      top: 25px;
+      color: var(--accent);
+      font-size: 20px;
+    }
+
+    /* SYSTEMS */
+
+    .systems-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 55px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 55px;
+      align-items: center;
+    }
+
+    .systems-panel h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(35px, 5vw, 58px);
+      font-weight: 500;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+
+    .systems-panel h3 span {
+      color: var(--accent);
+    }
+
+    .systems-panel p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 2;
+      margin-top: 20px;
+    }
+
+    .system-list {
+      list-style: none;
+      border-top: 1px solid var(--border);
+    }
+
+    .system-list li {
+      padding: 17px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .system-list span {
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* PROCESS */
+
+    .process-list {
+      border-top: 1px solid var(--border);
+    }
+
+    .process-item {
+      display: grid;
+      grid-template-columns: 90px 1fr 1.1fr;
+      gap: 25px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+    }
+
+    .process-item .step {
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+    }
+
+    .process-item h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 25px;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .process-item p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    /* WORK */
+
+    .work-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 17px;
+    }
+
+    .work-card {
+      min-height: 300px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 35px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: .3s;
+    }
+
+    .work-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-5px);
+    }
+
+    .work-top {
+      display: flex;
+      justify-content: space-between;
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .work-card h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 500;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .work-card p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.9;
+      max-width: 440px;
+    }
+
+    .work-link {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      margin-top: 25px;
+    }
+
+    /* TOOLKIT */
+
+    .toolkit {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tool {
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      transition: .2s;
+    }
+
+    .tool:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* FAQ */
+
+    .faq-list {
+      border-top: 1px solid var(--border);
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: 0;
+      color: var(--text);
+      padding: 24px 0;
+      display: flex;
+      justify-content: space-between;
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .faq-question span {
+      color: var(--accent);
+      font-size: 20px;
+    }
+
+    .faq-answer {
+      display: none;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.9;
+      padding: 0 40px 23px 0;
+    }
+
+    .faq-item.active .faq-answer {
+      display: block;
+    }
+
+    /* CONTACT */
+
+    .contact-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 55px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+    }
+
+    .contact-panel h2 {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(45px, 6vw, 75px);
+      font-weight: 500;
+      line-height: 1;
+      text-transform: uppercase;
+      margin: 20px 0;
+    }
+
+    .contact-panel h2 span {
+      color: var(--accent);
+    }
+
+    .contact-panel p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .contact-row {
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .contact-row span {
+      display: block;
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      margin-bottom: 9px;
+    }
+
+    .contact-row a,
+    .contact-row strong {
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding: 35px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .footer-inner p {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.8;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    /* SCROLL REVEAL */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(25px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+
+    @media(max-width: 950px) {
+      .nav-links {
+        gap: 15px;
+      }
+
+      .nav-links a {
+        font-size: 10px;
+      }
+
+      .hero-grid {
+        gap: 35px;
+      }
+
+      .about-grid {
+        gap: 35px;
+      }
+
+      .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media(max-width: 760px) {
+      .container,
+      .nav-inner {
+        width: min(100% - 36px, var(--max));
+      }
+
+      .nav-inner {
+        height: 68px;
+      }
+
+      .menu-toggle {
+        display: grid;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 68px;
+        left: 0;
+        right: 0;
+        padding: 22px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-links a {
+        padding: 14px 0;
+        font-size: 12px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .hero {
+        padding: 125px 0 75px;
+        min-height: auto;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 55px;
+      }
+
+      .hero h1 {
+        font-size: clamp(52px, 13vw, 78px);
+      }
+
+      .hero-visual {
+        width: 100%;
+      }
+
+      .photo-frame {
+        width: min(100%, 350px);
+      }
+
+      .photo-caption {
+        width: min(100%, 350px);
+      }
+
+      section.content-section {
+        padding: 80px 0;
+      }
+
+      .section-head {
+        display: block;
+        margin-bottom: 35px;
+      }
+
+      .section-head p {
+        margin-top: 20px;
+      }
+
+      .about-grid,
+      .systems-panel,
+      .contact-panel {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .about-number {
+        font-size: 85px;
+      }
+
+      .systems-panel,
+      .contact-panel {
+        padding: 30px 23px;
+      }
+
+      .process-item {
+        grid-template-columns: 45px 1fr;
+        gap: 12px;
+      }
+
+      .process-item p {
+        grid-column: 2;
+      }
+
+      .work-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media(max-width: 480px) {
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-meta {
+        gap: 20px;
+      }
+
+      .meta-item strong {
+        font-size: 21px;
+      }
+
+      .hero-description {
+        font-size: 13px;
+      }
+
+      .service-card {
+        min-height: 245px;
+      }
+
+      .work-card {
+        min-height: 260px;
+        padding: 25px;
+      }
+
+      .tool {
+        padding: 13px;
+        font-size: 10px;
+      }
+    }
+
+    @media(prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
     }
   </style>
 </head>
+
 <body>
-  <div class="progress" aria-hidden="true"></div><div class="grain" aria-hidden="true"></div>
-  <header class="site-header">
-    <div class="wrap nav">
-      <a class="brand" href="#top" aria-label="Raycee Tshabalala home">
-        <span class="brand-mark">R</span><span>RAYCEE.<small>DEVELOPER / FOUNDER</small></span>
-      </a>
-      <nav class="nav-links" aria-label="Main navigation">
-        <a href="#about">Profile</a><a href="#services">Expertise</a><a href="#work">Selected work</a><a href="#process">Approach</a>
+  <div class="grid-bg"></div>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="#home" class="brand">RAYCEE<span>.</span></a>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#systems">Systems</a>
+        <a href="#process">Process</a>
+        <a href="#work">Work</a>
+        <a href="#contact">Contact</a>
       </nav>
-      <a class="nav-cta" href="#contact">Start a project <span>↗</span></a>
-      <button class="menu-btn" aria-label="Open navigation" aria-expanded="false"><i></i><i></i></button>
+
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle colour theme">☼</button>
+        <button class="menu-toggle" id="menuToggle" aria-label="Open navigation">☰</button>
+      </div>
     </div>
   </header>
-  <div class="mobile-menu" aria-hidden="true">
-    <div class="mobile-menu-top"><a class="brand" href="#top"><span class="brand-mark">R</span><span>RAYCEE.<small>DEVELOPER / FOUNDER</small></span></a><button class="mobile-close" aria-label="Close navigation">×</button></div>
-    <nav><a href="#about">Profile ↗</a><a href="#services">Expertise ↗</a><a href="#work">Selected work ↗</a><a href="#process">Approach ↗</a><a href="#contact">Contact ↗</a></nav>
-    <div class="mono" style="font-size:10px;color:#77848b">INDEPENDENT DEVELOPER · SOUTH AFRICA</div>
-  </div>
 
-  <main id="top">
-    <section class="hero">
-      <div class="hero-lines" aria-hidden="true">
-        <svg viewBox="0 0 1440 900" preserveAspectRatio="none">
-          <path d="M-80 640 C180 390 290 800 520 560S900 210 1120 430 1350 660 1530 300"/>
-          <path d="M-80 680 C180 430 290 840 520 600S900 250 1120 470 1350 700 1530 340"/>
-          <path d="M-80 720 C180 470 290 880 520 640S900 290 1120 510 1350 740 1530 380"/>
-          <path d="M-80 760 C180 510 290 920 520 680S900 330 1120 550 1350 780 1530 420"/>
-        </svg>
-      </div>
-      <div class="wrap hero-grid">
-        <div>
-          <div class="eyebrow hero-kicker reveal">Independent developer · South Africa</div>
-          <h1 class="display hero-title reveal delay-1">Ideas into<br><span class="accent">intelligent</span><br>systems.</h1>
-          <p class="hero-sub reveal delay-2">I’m Raycee Tshabalala — a developer and founder building considered digital experiences, dependable backend systems and AI-powered automation for businesses ready to move forward.</p>
-          <div class="hero-actions reveal delay-3">
-            <a class="button" href="#contact">Discuss a project <span class="arrow">↗</span></a>
-            <a class="button secondary" href="#work">Explore my work <span class="arrow">↓</span></a>
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <div class="glow hero-glow"></div>
+
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">Independent Developer · South Africa</div>
+
+          <h1>
+            Building<br>
+            Digital <span>Systems.</span>
+          </h1>
+
+          <p class="hero-description">
+            I'm Raycee Tshabalala — a developer and digital systems builder.
+            I create professional websites, powerful backend solutions,
+            intelligent agents, automated workflows and custom tools that
+            help businesses operate and grow.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="#contact" class="btn btn-primary">Start a Project ↗</a>
+            <a href="#work" class="btn btn-outline">Explore My Work</a>
+          </div>
+
+          <div class="hero-meta">
+            <div class="meta-item">
+              <strong>Web</strong>
+              <span>Development</span>
+            </div>
+
+            <div class="meta-item">
+              <strong>Backend</strong>
+              <span>Engineering</span>
+            </div>
+
+            <div class="meta-item">
+              <strong>Systems</strong>
+              <span>Automation & Tools</span>
+            </div>
           </div>
         </div>
-        <aside class="hero-side reveal delay-2">
-          <div class="identity-card">
-            <span class="id">PROFILE / 001 — ROASOD</span>
-            <strong>Raycee<br>Tshabalala</strong>
-            <small>Founder · Developer · Systems thinker</small>
+
+        <!-- YOUR PROFILE PHOTO -->
+        <div class="hero-visual">
+          <div class="photo-frame">
+            <div class="photo-corner top-left"></div>
+            <div class="photo-corner bottom-right"></div>
+
+            <img
+              src="./WhatsApp%20Image%202026-04-05%20at%2002.50.12.jpeg"
+              alt="Portrait of Raycee Tshabalala"
+              onerror="this.style.opacity='0'; console.error('Profile photo not found. Check the image filename and folder location.');"
+            >
           </div>
-          <div class="side-note"><span>Available for select projects</span><span class="live-dot" aria-label="Available"></span></div>
-          <div class="side-note"><span>Based in South Africa</span><span>↗</span></div>
-        </aside>
+
+          <div class="photo-caption">
+            <h3>Raycee Tshabalala</h3>
+            <span>Developer / Builder</span>
+          </div>
+
+          <div class="availability">
+            <i></i>
+            Building digital solutions
+          </div>
+        </div>
       </div>
-      <div class="hero-foot"><span><b>01 / 05</b> — Digital engineering</span><span>Web · Backend · Automation</span><span>Scroll to explore ↓</span></div>
     </section>
 
-    <div class="ticker" aria-label="Areas of focus"><div class="ticker-track">
-      <span>Web engineering</span><span>Backend systems</span><span>AI automation</span><span>Digital products</span><span>Business platforms</span><span>Web engineering</span><span>Backend systems</span><span>AI automation</span><span>Digital products</span><span>Business platforms</span>
-    </div></div>
+    <!-- ABOUT -->
+    <section class="content-section" id="about">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <div class="eyebrow">01 / About Me</div>
+            <h2>Beyond the<br>Interface.</h2>
+          </div>
 
-    <section class="about" id="about">
-      <div class="wrap">
-        <div class="section-head reveal"><div><div class="eyebrow">01 — The person behind the work</div><h2 class="display">Built with intent.</h2></div><p>Good technology should do more than look impressive. It should make a business clearer, faster and more capable.</p></div>
-        <div class="about-grid">
-          <div class="about-stamp reveal"><span class="stamp-top">Personal dossier / RT-001</span><strong>Design the experience.<br>Engineer the engine.</strong><span class="stamp-bottom">Curiosity → Craft → Delivery</span></div>
-          <div class="about-copy reveal delay-1">
-            <h3>People notice the interface. They remember how well the system works.</h3>
-            <p>I am a web and backend developer focused on building practical digital products that connect design with real business operations. My work spans responsive websites, custom application logic, APIs and automation.</p>
-            <p>As the founder of <strong>ROASOD</strong>, I bring those disciplines together: understanding the problem, shaping the experience, engineering the underlying system and helping the finished product reach the people it is meant to serve.</p>
-            <p>I value clear architecture, purposeful design, reliable execution and technology that can grow beyond its first release.</p>
-            <div class="about-facts">
-              <div class="fact"><strong>01 /</strong><span>Strategy-led</span></div>
-              <div class="fact"><strong>02 /</strong><span>Build-focused</span></div>
-              <div class="fact"><strong>03 /</strong><span>Growth-minded</span></div>
+          <p>
+            I focus on creating digital products that are not only visually
+            refined, but functional, structured and built with purpose.
+          </p>
+        </div>
+
+        <div class="about-grid reveal">
+          <div class="about-number">01—</div>
+
+          <div class="about-copy">
+            <h3>
+              I turn ideas into practical digital experiences and connected systems.
+            </h3>
+
+            <p>
+              My work spans frontend development, backend engineering,
+              business websites, custom tools and digital infrastructure.
+              I approach every project with an emphasis on usability,
+              performance, maintainability and a professional finish.
+            </p>
+
+            <p>
+              Beyond conventional web development, I build agents,
+              workflows and automations that connect services, simplify
+              processes and reduce repetitive work. The objective is
+              straightforward: build technology that serves a real purpose.
+            </p>
+
+            <div class="about-tags">
+              <span class="tag">Web Developer</span>
+              <span class="tag">Backend Developer</span>
+              <span class="tag">Systems Builder</span>
+              <span class="tag">Agent & Workflow Developer</span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="dark-section" id="services">
-      <div class="wrap">
-        <div class="section-head reveal"><div><div class="eyebrow light">02 — Capabilities</div><h2 class="display">What I engineer.</h2></div><p>Three connected disciplines, brought together to create digital platforms that are useful, maintainable and ready to scale.</p></div>
+    <!-- SERVICES -->
+    <section class="content-section" id="services">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <div class="eyebrow">02 / Capabilities</div>
+            <h2>What I Build.</h2>
+          </div>
+
+          <p>
+            A combination of engineering, design and systems thinking
+            to deliver complete digital solutions.
+          </p>
+        </div>
+
         <div class="services-grid">
-          <article class="service reveal"><span class="service-num">01 / EXPERIENCE</span><div class="service-icon">⌘</div><h3>Web development</h3><p>High-performance, responsive websites and web applications designed around clarity, usability and conversion.</p><ul class="service-list"><li>Frontend engineering</li><li>Responsive UI</li><li>Business websites</li><li>Web applications</li></ul></article>
-          <article class="service reveal delay-1"><span class="service-num">02 / INFRASTRUCTURE</span><div class="service-icon">⌁</div><h3>Backend & APIs</h3><p>Structured application logic and integrations that make the experience work reliably behind the scenes.</p><ul class="service-list"><li>REST APIs</li><li>Database design</li><li>Authentication</li><li>Payments & integrations</li></ul></article>
-          <article class="service reveal delay-2"><span class="service-num">03 / INTELLIGENCE</span><div class="service-icon">✳</div><h3>AI & automation</h3><p>Useful automations that reduce repetitive work, improve response times and connect business workflows.</p><ul class="service-list"><li>AI assistants</li><li>WhatsApp workflows</li><li>Lead routing</li><li>Process automation</li></ul></article>
+          <article class="service-card reveal">
+            <span class="service-number">01 / FRONTEND</span>
+            <span class="service-arrow">↗</span>
+            <h3>Web Development</h3>
+            <p>
+              Responsive business websites, professional landing pages,
+              interactive interfaces, web applications and polished
+              digital experiences.
+            </p>
+          </article>
+
+          <article class="service-card reveal">
+            <span class="service-number">02 / BACKEND</span>
+            <span class="service-arrow">↗</span>
+            <h3>Backend & APIs</h3>
+            <p>
+              Server-side systems, REST APIs, authentication, databases,
+              integrations and the infrastructure that powers applications.
+            </p>
+          </article>
+
+          <article class="service-card reveal">
+            <span class="service-number">03 / AGENT SYSTEMS</span>
+            <span class="service-arrow">↗</span>
+            <h3>Agents & Workflows</h3>
+            <p>
+              Purpose-built agents, connected workflows, process orchestration,
+              service integrations and practical business automations.
+            </p>
+          </article>
+
+          <article class="service-card reveal">
+            <span class="service-number">04 / AUTOMATION</span>
+            <span class="service-arrow">↗</span>
+            <h3>Business Automation</h3>
+            <p>
+              Automated operations, notifications, data handling,
+              communication workflows and integrations that reduce
+              repetitive tasks.
+            </p>
+          </article>
+
+          <article class="service-card reveal">
+            <span class="service-number">05 / CUSTOM SOFTWARE</span>
+            <span class="service-arrow">↗</span>
+            <h3>Custom Tools</h3>
+            <p>
+              Internal business tools, dashboards, management interfaces,
+              calculators and purpose-built software for specific needs.
+            </p>
+          </article>
+
+          <article class="service-card reveal">
+            <span class="service-number">06 / INFRASTRUCTURE</span>
+            <span class="service-arrow">↗</span>
+            <h3>Hosting & Deployment</h3>
+            <p>
+              Deployment workflows, hosting configuration, application
+              setup, domain integration and production-oriented delivery.
+            </p>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="system">
-      <div class="wrap">
-        <div class="section-head reveal"><div><div class="eyebrow">03 — The philosophy</div><h2 class="display">One connected system.</h2></div><p>Design, engineering and automation deliver their greatest value when they are planned as one coherent product.</p></div>
-        <div class="system-grid">
-          <article class="system-card large reveal"><span class="system-label">The ROASOD approach / 001</span><div><h3>From first impression to dependable operation.</h3><p>A digital presence is only the beginning. The right structure connects the customer journey to the tools, data and workflows that support the business.</p></div><div class="system-orbit" aria-hidden="true"></div></article>
-          <article class="system-card reveal delay-1"><span class="system-label">Layer 01 / Interface</span><div><h3>Make complexity feel simple.</h3><p>Clear navigation, considered typography and responsive interactions that make products easier to use.</p></div><span class="system-arrow">↗</span></article>
-          <article class="system-card reveal delay-2"><span class="system-label">Layer 02 / Operations</span><div><h3>Make the system dependable.</h3><p>Well-structured data, secure application logic and integrations built around the way a business operates.</p></div><span class="system-arrow">↗</span></article>
+    <!-- SYSTEMS -->
+    <section class="content-section" id="systems">
+      <div class="container">
+        <div class="systems-panel reveal">
+          <div>
+            <div class="eyebrow">03 / Connected Solutions</div>
+
+            <h3>
+              More than separate tools.
+              <span>Connected systems.</span>
+            </h3>
+
+            <p>
+              I approach digital projects as connected systems.
+              Websites, APIs, databases, agents, workflows and tools
+              can work together to create a more efficient operation.
+            </p>
+          </div>
+
+          <ul class="system-list">
+            <li>Web interfaces <span>↗</span></li>
+            <li>Backend infrastructure <span>↗</span></li>
+            <li>Agents & orchestration <span>↗</span></li>
+            <li>Automated workflows <span>↗</span></li>
+            <li>Custom business tools <span>↗</span></li>
+            <li>Third-party integrations <span>↗</span></li>
+          </ul>
         </div>
       </div>
     </section>
 
-    <section class="process" id="process">
-      <div class="wrap">
-        <div class="section-head reveal"><div><div class="eyebrow">04 — Methodology</div><h2 class="display">A disciplined process.</h2></div><p>Every project needs a clear objective, a considered build and a launch that is properly tested.</p></div>
-        <div class="process-list">
-          <article class="process-step reveal"><span class="number">01 / DISCOVER</span><h3>Understand</h3><p>Clarify the business objective, audience, constraints and essential functionality before choosing the solution.</p></article>
-          <article class="process-step reveal delay-1"><span class="number">02 / ENGINEER</span><h3>Design & build</h3><p>Shape the user experience, develop the application and connect the systems in focused, reviewable stages.</p></article>
-          <article class="process-step reveal delay-2"><span class="number">03 / DELIVER</span><h3>Test & launch</h3><p>Validate the experience across devices, deploy the product and provide a clear handover for what comes next.</p></article>
+    <!-- PROCESS -->
+    <section class="content-section" id="process">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <div class="eyebrow">04 / Methodology</div>
+            <h2>How I Work.</h2>
+          </div>
+
+          <p>
+            A structured approach that takes an idea from initial
+            requirements to a usable digital solution.
+          </p>
+        </div>
+
+        <div class="process-list reveal">
+          <div class="process-item">
+            <span class="step">01</span>
+            <h3>Discover</h3>
+            <p>Understand the objective, requirements, audience and problem that needs solving.</p>
+          </div>
+
+          <div class="process-item">
+            <span class="step">02</span>
+            <h3>Architect</h3>
+            <p>Plan the structure, user experience, technical approach and system components.</p>
+          </div>
+
+          <div class="process-item">
+            <span class="step">03</span>
+            <h3>Develop</h3>
+            <p>Build the interface, backend, integrations, workflows and required functionality.</p>
+          </div>
+
+          <div class="process-item">
+            <span class="step">04</span>
+            <h3>Refine</h3>
+            <p>Test functionality, improve usability, resolve issues and optimise performance.</p>
+          </div>
+
+          <div class="process-item">
+            <span class="step">05</span>
+            <h3>Deploy</h3>
+            <p>Prepare the project for delivery, hosting and continued development.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="work" id="work">
-      <div class="wrap">
-        <div class="section-head reveal"><div><div class="eyebrow light">05 — Selected direction</div><h2 class="display">Work in progress.<br>Built for what’s next.</h2></div><p>A selection of the platforms and product directions connected to my work. Project details can be expanded as each case study is published.</p></div>
+    <!-- WORK -->
+    <section class="content-section" id="work">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <div class="eyebrow">05 / Selected Work</div>
+            <h2>Projects & Concepts.</h2>
+          </div>
+
+          <p>
+            A selection of digital projects, platforms and systems
+            that represent my development direction.
+          </p>
+        </div>
+
         <div class="work-grid">
-          <article class="work-feature reveal"><div><span class="work-type">01 / Digital studio · Founder project</span><h3>ROASOD digital systems.</h3><p>A digital studio focused on high-performance websites, custom business platforms and AI-powered workflows.</p></div><a class="work-link" href="https://roasod.vercel.app/" target="_blank" rel="noopener noreferrer">Explore ROASOD <b>↗</b></a></article>
-          <div class="work-side">
-            <article class="work-small reveal delay-1"><div><span class="work-type">02 / Product concept</span><h3>Vincunex</h3><p>A connected directory concept designed to bring communities and organisations into one accessible platform.</p></div><span class="work-link">Platform concept <b>↗</b></span></article>
-            <article class="work-small reveal delay-2"><div><span class="work-type">03 / Applied AI</span><h3>Conversational assistants</h3><p>Exploring AI-powered assistants that can support enquiries, guide users and streamline everyday workflows.</p></div><span class="work-link">Automation direction <b>↗</b></span></article>
+          <article class="work-card reveal">
+            <div class="work-top">
+              <span>01 / Digital Platform</span>
+              <span>ROASOD</span>
+            </div>
+
+            <div>
+              <h3>ROASOD</h3>
+              <p>
+                A digital development initiative focused on websites,
+                business solutions, tools and connected digital systems.
+              </p>
+              <a class="work-link" href="https://roasod.vercel.app/" target="_blank" rel="noopener noreferrer">
+                Visit Project ↗
+              </a>
+            </div>
+          </article>
+
+          <article class="work-card reveal">
+            <div class="work-top">
+              <span>02 / Web Concept</span>
+              <span>VINCUNEX</span>
+            </div>
+
+            <div>
+              <h3>Vincunex</h3>
+              <p>
+                A digital directory concept designed around bringing
+                organisations and communities together through a
+                structured online platform.
+              </p>
+              <span class="work-link">Platform Concept</span>
+            </div>
+          </article>
+
+          <article class="work-card reveal">
+            <div class="work-top">
+              <span>03 / Automation</span>
+              <span>AGENT SYSTEMS</span>
+            </div>
+
+            <div>
+              <h3>Agents & Workflows</h3>
+              <p>
+                Connected agent systems and automated workflows designed
+                to coordinate tasks, integrate services and simplify operations.
+              </p>
+              <span class="work-link">Systems Development</span>
+            </div>
+          </article>
+
+          <article class="work-card reveal">
+            <div class="work-top">
+              <span>04 / Software</span>
+              <span>CUSTOM TOOLS</span>
+            </div>
+
+            <div>
+              <h3>Business Tools</h3>
+              <p>
+                Purpose-built tools and application interfaces designed
+                around practical business requirements and operational needs.
+              </p>
+              <span class="work-link">Custom Development</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOLKIT -->
+    <section class="content-section" id="toolkit">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <div class="eyebrow">06 / Technical Toolkit</div>
+            <h2>Tools of the Trade.</h2>
+          </div>
+
+          <p>
+            Technologies and platforms used across web development,
+            backend engineering, integrations and deployment.
+          </p>
+        </div>
+
+        <div class="toolkit reveal">
+          <span class="tool">HTML5</span>
+          <span class="tool">CSS3</span>
+          <span class="tool">JavaScript</span>
+          <span class="tool">React</span>
+          <span class="tool">Node.js</span>
+          <span class="tool">Python</span>
+          <span class="tool">C# / .NET</span>
+          <span class="tool">REST APIs</span>
+          <span class="tool">SQL</span>
+          <span class="tool">SQLite</span>
+          <span class="tool">Git</span>
+          <span class="tool">GitHub</span>
+          <span class="tool">Vercel</span>
+          <span class="tool">Render</span>
+          <span class="tool">API Integrations</span>
+          <span class="tool">Agent Systems</span>
+          <span class="tool">Workflow Automation</span>
+          <span class="tool">Custom Tools</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="content-section" id="faq">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <div class="eyebrow">07 / Frequently Asked</div>
+            <h2>Good Questions.</h2>
+          </div>
+
+          <p>
+            A few useful details about the way I approach projects
+            and the solutions I build.
+          </p>
+        </div>
+
+        <div class="faq-list reveal">
+          <div class="faq-item">
+            <button class="faq-question">
+              What type of projects do you work on?
+              <span>+</span>
+            </button>
+            <div class="faq-answer">
+              I work on business websites, web applications, backend systems,
+              APIs, agents, workflows, automations and custom software tools.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              Can you build a complete business website?
+              <span>+</span>
+            </button>
+            <div class="faq-answer">
+              Yes. A project can include the frontend, backend functionality,
+              integrations, database requirements and deployment setup,
+              depending on its scope.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              Do you build agents and automated workflows?
+              <span>+</span>
+            </button>
+            <div class="faq-answer">
+              Yes. I build purpose-specific agents, connected workflows,
+              service integrations and automations designed around
+              practical operational requirements.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              Can you create a custom tool for my business?
+              <span>+</span>
+            </button>
+            <div class="faq-answer">
+              Yes. Custom tools can include dashboards, management interfaces,
+              internal utilities, data-handling systems and other
+              purpose-built applications.
+            </div>
           </div>
         </div>
-        <p class="work-note">Selected directions shown; detailed case studies and verified project outcomes will be added as they are published.</p>
       </div>
     </section>
 
-    <section class="stack">
-      <div class="wrap">
-        <div class="section-head reveal"><div><div class="eyebrow">06 — Tools of the trade</div><h2 class="display">The technical toolkit.</h2></div><p>A practical, evolving toolkit selected to suit the needs of each product rather than forcing every project into the same stack.</p></div>
-        <div class="stack-list reveal">
-          <span class="stack-chip">HTML / CSS</span><span class="stack-chip">JavaScript</span><span class="stack-chip">React</span><span class="stack-chip">Node.js</span><span class="stack-chip">Python</span><span class="stack-chip">C# / .NET</span><span class="stack-chip">REST APIs</span><span class="stack-chip">SQL / SQLite</span><span class="stack-chip">Git & GitHub</span><span class="stack-chip">Vercel</span><span class="stack-chip">Render</span><span class="stack-chip">AI integrations</span>
-        </div>
-      </div>
-    </section>
+    <!-- CONTACT -->
+    <section class="content-section" id="contact">
+      <div class="container">
+        <div class="contact-panel reveal">
+          <div>
+            <div class="eyebrow">08 / Start a Conversation</div>
 
-    <section class="faq">
-      <div class="wrap faq-layout">
-        <div class="faq-title reveal"><div class="eyebrow">07 — Clarification</div><h2 class="display">Good questions.<br>Clear answers.</h2><p>A few useful details about how I approach projects and collaboration.</p></div>
-        <div class="faq-list reveal delay-1">
-          <article class="faq-item open"><button class="faq-question" aria-expanded="true"><span>What kinds of projects do you take on?</span><span>+</span></button><div class="faq-answer"><div><p>Business websites, custom web applications, backend services, API integrations and AI or workflow automation. The best starting point is the business problem you need solved.</p></div></div></article>
-          <article class="faq-item"><button class="faq-question" aria-expanded="false"><span>Can you build both the frontend and backend?</span><span>+</span></button><div class="faq-answer"><div><p>Yes. Projects can include the user interface, application logic, database structure, APIs and deployment, with scope agreed before development begins.</p></div></div></article>
-          <article class="faq-item"><button class="faq-question" aria-expanded="false"><span>How long does a project take?</span><span>+</span></button><div class="faq-answer"><div><p>Timing depends on the size and complexity of the build. A focused business website may take a few weeks; larger platforms and integrations require a staged plan.</p></div></div></article>
-          <article class="faq-item"><button class="faq-question" aria-expanded="false"><span>How do we get started?</span><span>+</span></button><div class="faq-answer"><div><p>Send a short description of your idea, what you want to achieve and any deadlines or existing systems involved. I’ll use that to establish the next practical step.</p></div></div></article>
-        </div>
-      </div>
-    </section>
+            <h2>
+              Have an idea?<br>
+              Let's <span>build it.</span>
+            </h2>
 
-    <section class="contact" id="contact">
-      <div class="wrap contact-grid">
-        <div class="reveal">
-          <div class="eyebrow">08 — Initiate a conversation</div>
-          <h2 class="display">Let’s build<br>what’s next.</h2>
-          <p class="contact-intro">Have a business challenge, a product idea or a system that needs improving? Share the essentials. We can establish whether there’s a good fit and define a sensible next step.</p>
-          <div class="contact-links">
-            <a href="mailto:rayceeblaccreedtshabalala@gmail.com"><span>Email / Direct enquiry</span><span>↗</span></a>
-            <a href="https://raycee.vercel.app/" target="_blank" rel="noopener noreferrer"><span>Portfolio / Current site</span><span>↗</span></a>
-            <a href="https://roasod.vercel.app/" target="_blank" rel="noopener noreferrer"><span>Studio / ROASOD</span><span>↗</span></a>
+            <p>
+              Whether you need a website, backend solution, agent,
+              automated workflow or custom tool, let's discuss
+              what you're looking to create.
+            </p>
+
+            <div style="margin-top:30px">
+              <a
+                class="btn btn-primary"
+                href="mailto:rayceeblaccreedtshabalala@gmail.com?subject=Project%20Enquiry"
+              >
+                Discuss a Project ↗
+              </a>
+            </div>
+          </div>
+
+          <div class="contact-details">
+            <div class="contact-row">
+              <span>Email</span>
+              <a href="mailto:rayceeblaccreedtshabalala@gmail.com">
+                rayceeblaccreedtshabalala@gmail.com
+              </a>
+            </div>
+
+            <div class="contact-row">
+              <span>Portfolio</span>
+              <a href="https://raycee.vercel.app/" target="_blank" rel="noopener noreferrer">
+                raycee.vercel.app ↗
+              </a>
+            </div>
+
+            <div class="contact-row">
+              <span>Organisation</span>
+              <a href="https://roasod.vercel.app/" target="_blank" rel="noopener noreferrer">
+                ROASOD ↗
+              </a>
+            </div>
+
+            <div class="contact-row">
+              <span>Location</span>
+              <strong>South Africa</strong>
+            </div>
           </div>
         </div>
-        <form class="contact-form reveal delay-1" id="contactForm">
-          <div class="eyebrow light">Project enquiry / 001</div>
-          <label>Your name<input name="name" autocomplete="name" placeholder="How should I address you?" required></label>
-          <label>Email address<input name="email" type="email" autocomplete="email" placeholder="you@company.com" required></label>
-          <label>What are you looking to build?<textarea name="message" placeholder="A few details about the project, goals and timeline..." required></textarea></label>
-          <button type="submit">Prepare enquiry <span>↗</span></button>
-          <p class="form-note">This form opens your email application with the details filled in. No information is stored on this website.</p>
-        </form>
       </div>
     </section>
   </main>
 
+  <!-- FOOTER -->
   <footer>
-    <div class="wrap footer-row">
-      <div class="footer-copy">© <span id="year"></span> <b>Raycee Tshabalala</b> · ROASOD</div>
-      <div class="footer-meta">Independent digital engineering · South Africa</div>
-      <a class="footer-top" href="#top">Back to top ↑</a>
+    <div class="container footer-inner">
+      <div>
+        <a href="#home" class="brand">RAYCEE<span>.</span></a>
+        <p>© <span id="year"></span> Raycee Tshabalala. All rights reserved.</p>
+      </div>
+
+      <div class="footer-links">
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#work">Work</a>
+        <a href="#contact">Contact</a>
+        <a href="https://roasod.vercel.app/" target="_blank" rel="noopener noreferrer">ROASOD ↗</a>
+      </div>
     </div>
   </footer>
+
   <script>
-    (() => {
-      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const progress = document.querySelector('.progress');
-      const updateProgress = () => {
-        const max = document.documentElement.scrollHeight - innerHeight;
-        progress.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
-      };
-      addEventListener('scroll', updateProgress, {passive:true});
-      addEventListener('resize', updateProgress);
-      updateProgress();
+    // Current year
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
 
-      const revealEls = document.querySelectorAll('.reveal');
-      if ('IntersectionObserver' in window && !reduceMotion) {
-        const observer = new IntersectionObserver(entries => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-              observer.unobserve(entry.target);
-            }
-          });
-        }, {threshold:0.12, rootMargin:'0px 0px -35px 0px'});
-        revealEls.forEach(el => observer.observe(el));
-      } else revealEls.forEach(el => el.classList.add('visible'));
+    // Mobile navigation
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinks = document.getElementById("navLinks");
 
-      const menu = document.querySelector('.mobile-menu');
-      const menuBtn = document.querySelector('.menu-btn');
-      const closeBtn = document.querySelector('.mobile-close');
-      const closeMenu = () => {
-        menu.classList.remove('open'); menu.setAttribute('aria-hidden','true');
-        menuBtn.setAttribute('aria-expanded','false'); document.body.classList.remove('menu-open');
-      };
-      menuBtn.addEventListener('click', () => {
-        menu.classList.add('open'); menu.setAttribute('aria-hidden','false');
-        menuBtn.setAttribute('aria-expanded','true'); document.body.classList.add('menu-open');
+    menuToggle.addEventListener("click", () => {
+      navLinks.classList.toggle("open");
+      menuToggle.textContent =
+        navLinks.classList.contains("open") ? "×" : "☰";
+    });
+
+    navLinks.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        navLinks.classList.remove("open");
+        menuToggle.textContent = "☰";
       });
-      closeBtn.addEventListener('click', closeMenu);
-      menu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
-      addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+    });
 
-      document.querySelectorAll('.faq-question').forEach(button => {
-        button.addEventListener('click', () => {
-          const item = button.closest('.faq-item');
-          const open = item.classList.toggle('open');
-          button.setAttribute('aria-expanded', String(open));
+    // Dark / light mode
+    const themeToggle = document.getElementById("themeToggle");
+
+    themeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("light");
+
+      const isLight =
+        document.body.classList.contains("light");
+
+      themeToggle.textContent = isLight ? "☾" : "☼";
+      document.querySelector('meta[name="theme-color"]')
+        .setAttribute("content", isLight ? "#f4f7f8" : "#080b0e");
+    });
+
+    // FAQ accordion
+    document.querySelectorAll(".faq-question").forEach(button => {
+      button.addEventListener("click", () => {
+        const item = button.closest(".faq-item");
+        const isActive = item.classList.contains("active");
+
+        document.querySelectorAll(".faq-item").forEach(other => {
+          other.classList.remove("active");
+          other.querySelector(".faq-question span").textContent = "+";
         });
-      });
 
-      document.getElementById('year').textContent = new Date().getFullYear();
-      document.getElementById('contactForm').addEventListener('submit', e => {
-        e.preventDefault();
-        const data = new FormData(e.currentTarget);
-        const subject = encodeURIComponent('Project enquiry from ' + data.get('name'));
-        const body = encodeURIComponent(
-          'Name: ' + data.get('name') + '\nEmail: ' + data.get('email') +
-          '\n\nProject details:\n' + data.get('message')
-        );
-        location.href = `mailto:rayceeblaccreedtshabalala@gmail.com?subject=${subject}&body=${body}`;
+        if (!isActive) {
+          item.classList.add("active");
+          button.querySelector("span").textContent = "−";
+        }
       });
-    })();
+    });
+
+    // Scroll reveal
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.12
+    });
+
+    document.querySelectorAll(".reveal").forEach(element => {
+      observer.observe(element);
+    });
   </script>
 </body>
 </html>
-'''
-
-prompt = """# ROASOD / Raycee Tshabalala — Portfolio Redesign Brief
-
-Act as a principal digital product designer and senior frontend engineer. Build and maintain a premium, responsive personal portfolio for Raycee Tshabalala, developer and founder of ROASOD.
-
-## Creative direction
-Use the supplied KIMI / GRIDO1 racing-site specification as visual inspiration only: editorial art direction, bold condensed display typography, precise metadata, strong contrast, clean grid systems, cinematic section transitions, subtle motion, and a distinctive cyan accent. Do not copy Kimi Antonelli, Mercedes, GRIDO1, racing-specific copy, or their proprietary assets.
-
-## Brand and palette
-- Brand: Raycee Tshabalala / ROASOD
-- Positioning: Web Developer · Backend Developer · AI & Automation
-- Ground: ice white `#f7fafb`
-- Primary ink: `#090d10`
-- Dark panels: `#11171c` and `#171e24`
-- Accent: cyan `#02cfe0`
-- Type: Oswald for display; Manrope for body; DM Mono for metadata.
-- Tone: intelligent, confident, restrained, precise and professional.
-
-## Content requirements
-Retain the supplied portfolio's genuine positioning and contact information. Present:
-- A strong opening statement about turning ideas into intelligent systems.
-- Founder profile and ROASOD context.
-- Web development, backend/API engineering, AI and automation.
-- A coherent delivery process: Discover, Engineer, Deliver.
-- Selected work with honest descriptions; never invent metrics, testimonials, client results or completed case studies.
-- Technical toolkit, useful FAQs and direct contact links.
-- Contact email: rayceeblaccreedtshabalala@gmail.com
-- Portfolio: https://raycee.vercel.app/
-- ROASOD: https://roasod.vercel.app/
-
-## Experience and engineering
-- Responsive desktop, tablet and mobile layouts.
-- Accessible semantic HTML, keyboard-operable navigation, visible focus states and reduced-motion support.
-- Subtle scroll progress, reveal-on-scroll, mobile navigation, FAQ accordion and working email-compose contact form.
-- Avoid fake buttons, dead links, fabricated statistics, missing local assets and unnecessary dependencies.
-- Keep the project easy to deploy as a static site on Vercel or any standard static host.
-- Preserve clear file structure and provide setup/deployment instructions.
-
-## Deliverables
-A complete working portfolio, README, and this prompt retained in the project. Validate HTML/CSS/JS, responsive behavior and all navigation/contact links before delivery.
-"""
-
-readme = """# Raycee Tshabalala — Portfolio
-
-A responsive, single-page portfolio for Raycee Tshabalala, developer and founder of ROASOD.
-
-## Files
-- `index.html` — complete standalone portfolio (HTML, CSS and JavaScript).
-- `PORTFOLIO_PROMPT.md` — design and implementation brief retained with the project.
-
-## Run locally
-Open `index.html` in a browser. No build step or package installation is required.
-
-For a local development server, run one of:
-- `python -m http.server 8000` then visit `http://localhost:8000`
-- VS Code Live Server
-
-## Deploy
-### Vercel
-1. Create a new project and import the folder/repository.
-2. Choose **Other** as the framework preset (or static site).
-3. Leave build command and output directory empty/default; the root contains `index.html`.
-4. Deploy.
-
-## Customise
-- Update the profile copy and selected-work descriptions directly in `index.html`.
-- Replace the ROASOD / Vincunex project descriptions as real case studies become available.
-- The contact form uses a `mailto:` action and does not store submissions. For server-side submissions, connect a trusted form endpoint.
-- The logo is a typographic mark made in CSS; no external logo asset is required.
-
-## Notes
-The site intentionally avoids invented client metrics, testimonials or project outcomes. Google Fonts are optional enhancements; system fallbacks are defined.
-"""
-
-(out/"index.html").write_text(html, encoding="utf-8")
-(out/"PORTFOLIO_PROMPT.md").write_text(prompt, encoding="utf-8")
-(out/"README.md").write_text(readme, encoding="utf-8")
-
-zip_path = Path("/mnt/data/Raycee_ROASOD_Portfolio.zip")
-with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-    for f in out.iterdir():
-        z.write(f, arcname=f"Raycee_ROASOD_Portfolio/{f.name}")
-
-print(f"Created: {zip_path} ({zip_path.stat().st_size:,} bytes)")
-print(f"Files: {[f.name for f in out.iterdir()]}")

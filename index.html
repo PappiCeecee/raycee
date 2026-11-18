@@ -1,1679 +1,505 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080b0e">
-  <meta name="description" content="Raycee Tshabalala — Web Developer, Backend Developer and Builder of Agents, Workflows, Automations and Custom Tools.">
-  <title>Raycee Tshabalala | Developer </title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #080b0e;
-      --surface: #10161b;
-      --surface-2: #151d23;
-      --text: #f1f5f7;
-      --muted: #929da5;
-      --accent: #00d5e8;
-      --border: rgba(255,255,255,.11);
-      --header: rgba(8,11,14,.82);
-      --max: 1200px;
-    }
-
-    body.light {
-      --bg: #f4f7f8;
-      --surface: #ffffff;
-      --surface-2: #eaf0f2;
-      --text: #10171b;
-      --muted: #58666d;
-      --border: rgba(0,0,0,.12);
-      --header: rgba(244,247,248,.88);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 90px;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Manrope', sans-serif;
-      overflow-x: hidden;
-      transition: background .3s, color .3s;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button {
-      font: inherit;
-    }
-
-    ::selection {
-      background: var(--accent);
-      color: #001014;
-    }
-
-    .container {
-      width: min(var(--max), calc(100% - 48px));
-      margin: auto;
-    }
-
-    .mono,
-    .eyebrow,
-    .section-index,
-    .nav-label {
-      font-family: 'DM Mono', monospace;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
-
-    .eyebrow {
-      color: var(--accent);
-      font-size: 11px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .eyebrow::before {
-      content: "";
-      width: 25px;
-      height: 1px;
-      background: var(--accent);
-    }
-
-    .grid-bg {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: -2;
-      opacity: .16;
-      background-image:
-        linear-gradient(var(--border) 1px, transparent 1px),
-        linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 75px 75px;
-      mask-image: linear-gradient(to bottom, black, transparent 90%);
-    }
-
-    .glow {
-      position: absolute;
-      width: 450px;
-      height: 450px;
-      border-radius: 50%;
-      background: rgba(0,213,232,.10);
-      filter: blur(110px);
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    /* NAVIGATION */
-
-    .nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      background: var(--header);
-      backdrop-filter: blur(18px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-inner {
-      width: min(var(--max), calc(100% - 48px));
-      height: 76px;
-      margin: auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .brand {
-      font-family: 'Oswald', sans-serif;
-      font-size: 23px;
-      font-weight: 600;
-      letter-spacing: .04em;
-    }
-
-    .brand span {
-      color: var(--accent);
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 27px;
-    }
-
-    .nav-links a {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      transition: color .2s;
-    }
-
-    .nav-links a:hover {
-      color: var(--accent);
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .theme-toggle,
-    .menu-toggle {
-      width: 39px;
-      height: 39px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      border-radius: 50%;
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-    }
-
-    .menu-toggle {
-      display: none;
-      border-radius: 8px;
-      font-size: 20px;
-    }
-
-    /* BUTTONS */
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      min-height: 48px;
-      padding: 0 22px;
-      border: 1px solid var(--border);
-      font-size: 12px;
-      font-weight: 800;
-      transition: .25s ease;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #001014;
-      border-color: var(--accent);
-    }
-
-    .btn-primary:hover {
-      background: transparent;
-      color: var(--accent);
-      transform: translateY(-3px);
-    }
-
-    .btn-outline:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      transform: translateY(-3px);
-    }
-
-    /* HERO */
-
-    .hero {
-      min-height: 820px;
-      padding: 160px 0 100px;
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .hero-glow {
-      top: 150px;
-      right: -120px;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.15fr .85fr;
-      align-items: center;
-      gap: 70px;
-    }
-
-    .hero h1 {
-      font-family: 'Oswald', sans-serif;
-      font-size: clamp(55px, 7vw, 94px);
-      font-weight: 600;
-      line-height: .99;
-      letter-spacing: -.025em;
-      text-transform: uppercase;
-      margin: 28px 0;
-    }
-
-    .hero h1 span {
-      color: var(--accent);
-    }
-
-    .hero-description {
-      max-width: 560px;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.95;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 13px;
-      flex-wrap: wrap;
-      margin-top: 34px;
-    }
-
-    .hero-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 35px;
-      margin-top: 55px;
-      padding-top: 25px;
-      border-top: 1px solid var(--border);
-    }
-
-    .meta-item strong {
-      display: block;
-      font-family: 'Oswald', sans-serif;
-      font-size: 25px;
-      font-weight: 500;
-    }
-
-    .meta-item span {
-      display: block;
-      color: var(--muted);
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      margin-top: 5px;
-    }
-
-    /* PROFILE IMAGE */
-
-    .hero-visual {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .photo-frame {
-      position: relative;
-      width: min(100%, 390px);
-      aspect-ratio: 4 / 5;
-      padding: 9px;
-      background: var(--surface);
-      border: 1px solid rgba(0,213,232,.55);
-      overflow: hidden;
-      box-shadow: 0 0 60px rgba(0,213,232,.10);
-    }
-
-    .photo-frame::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border: 1px solid rgba(0,213,232,.2);
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    .photo-frame img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 35%;
-      filter: saturate(.85);
-      transition: transform .7s ease, filter .7s ease;
-    }
-
-    .photo-frame:hover img {
-      transform: scale(1.045);
-      filter: saturate(1);
-    }
-
-    .photo-corner {
-      position: absolute;
-      width: 45px;
-      height: 45px;
-      border-color: var(--accent);
-      border-style: solid;
-      z-index: 3;
-      pointer-events: none;
-    }
-
-    .photo-corner.top-left {
-      top: 0;
-      left: 0;
-      border-width: 2px 0 0 2px;
-    }
-
-    .photo-corner.bottom-right {
-      bottom: 0;
-      right: 0;
-      border-width: 0 2px 2px 0;
-    }
-
-    .photo-caption {
-      width: min(100%, 390px);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 2px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .photo-caption h3 {
-      font-family: 'Oswald', sans-serif;
-      font-size: 21px;
-      font-weight: 500;
-      text-transform: uppercase;
-    }
-
-    .photo-caption span {
-      color: var(--accent);
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      letter-spacing: .12em;
-    }
-
-    .availability {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      text-transform: uppercase;
-      margin-top: 18px;
-    }
-
-    .availability i {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #39d98a;
-      box-shadow: 0 0 12px #39d98a;
-    }
-
-    /* SECTIONS */
-
-    section.content-section {
-      padding: 120px 0;
-      border-top: 1px solid var(--border);
-      position: relative;
-    }
-
-    .section-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 30px;
-      margin-bottom: 55px;
-    }
-
-    .section-head h2 {
-      font-family: 'Oswald', sans-serif;
-      font-size: clamp(43px, 6vw, 72px);
-      font-weight: 500;
-      line-height: 1;
-      text-transform: uppercase;
-      margin-top: 18px;
-    }
-
-    .section-head p {
-      max-width: 390px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.9;
-    }
-
-    /* ABOUT */
-
-    .about-grid {
-      display: grid;
-      grid-template-columns: .8fr 1.2fr;
-      gap: 80px;
-    }
-
-    .about-number {
-      font-family: 'Oswald', sans-serif;
-      font-size: 130px;
-      line-height: 1;
-      color: var(--accent);
-      opacity: .8;
-    }
-
-    .about-copy h3 {
-      font-size: 24px;
-      line-height: 1.5;
-      margin-bottom: 22px;
-    }
-
-    .about-copy p {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 2;
-      margin-bottom: 18px;
-    }
-
-    .about-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px;
-      margin-top: 30px;
-    }
-
-    .tag {
-      padding: 9px 13px;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      text-transform: uppercase;
-    }
-
-    /* SERVICES */
-
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-    }
-
-    .service-card {
-      min-height: 285px;
-      padding: 30px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-      transition: .3s ease;
-    }
-
-    .service-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-7px);
-    }
-
-    .service-number {
-      font-family: 'DM Mono', monospace;
-      color: var(--accent);
-      font-size: 11px;
-    }
-
-    .service-card h3 {
-      font-family: 'Oswald', sans-serif;
-      font-size: 27px;
-      font-weight: 500;
-      text-transform: uppercase;
-      margin: 40px 0 15px;
-    }
-
-    .service-card p {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.9;
-    }
-
-    .service-arrow {
-      position: absolute;
-      right: 28px;
-      top: 25px;
-      color: var(--accent);
-      font-size: 20px;
-    }
-
-    /* SYSTEMS */
-
-    .systems-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 55px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 55px;
-      align-items: center;
-    }
-
-    .systems-panel h3 {
-      font-family: 'Oswald', sans-serif;
-      font-size: clamp(35px, 5vw, 58px);
-      font-weight: 500;
-      line-height: 1.1;
-      text-transform: uppercase;
-    }
-
-    .systems-panel h3 span {
-      color: var(--accent);
-    }
-
-    .systems-panel p {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 2;
-      margin-top: 20px;
-    }
-
-    .system-list {
-      list-style: none;
-      border-top: 1px solid var(--border);
-    }
-
-    .system-list li {
-      padding: 17px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .system-list span {
-      color: var(--accent);
-      font-family: 'DM Mono', monospace;
-    }
-
-    /* PROCESS */
-
-    .process-list {
-      border-top: 1px solid var(--border);
-    }
-
-    .process-item {
-      display: grid;
-      grid-template-columns: 90px 1fr 1.1fr;
-      gap: 25px;
-      padding: 28px 0;
-      border-bottom: 1px solid var(--border);
-      align-items: center;
-    }
-
-    .process-item .step {
-      color: var(--accent);
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-    }
-
-    .process-item h3 {
-      font-family: 'Oswald', sans-serif;
-      font-size: 25px;
-      font-weight: 500;
-      text-transform: uppercase;
-    }
-
-    .process-item p {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.8;
-    }
-
-    /* WORK */
-
-    .work-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 17px;
-    }
-
-    .work-card {
-      min-height: 300px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 35px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: .3s;
-    }
-
-    .work-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-5px);
-    }
-
-    .work-top {
-      display: flex;
-      justify-content: space-between;
-      color: var(--accent);
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      text-transform: uppercase;
-    }
-
-    .work-card h3 {
-      font-family: 'Oswald', sans-serif;
-      font-size: clamp(32px, 4vw, 48px);
-      font-weight: 500;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
-    .work-card p {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.9;
-      max-width: 440px;
-    }
-
-    .work-link {
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 800;
-      margin-top: 25px;
-    }
-
-    /* TOOLKIT */
-
-    .toolkit {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .tool {
-      padding: 16px 20px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--muted);
-      transition: .2s;
-    }
-
-    .tool:hover {
-      color: var(--accent);
-      border-color: var(--accent);
-    }
-
-    /* FAQ */
-
-    .faq-list {
-      border-top: 1px solid var(--border);
-    }
-
-    .faq-item {
-      border-bottom: 1px solid var(--border);
-    }
-
-    .faq-question {
-      width: 100%;
-      background: none;
-      border: 0;
-      color: var(--text);
-      padding: 24px 0;
-      display: flex;
-      justify-content: space-between;
-      text-align: left;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 800;
-    }
-
-    .faq-question span {
-      color: var(--accent);
-      font-size: 20px;
-    }
-
-    .faq-answer {
-      display: none;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.9;
-      padding: 0 40px 23px 0;
-    }
-
-    .faq-item.active .faq-answer {
-      display: block;
-    }
-
-    /* CONTACT */
-
-    .contact-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 55px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-    }
-
-    .contact-panel h2 {
-      font-family: 'Oswald', sans-serif;
-      font-size: clamp(45px, 6vw, 75px);
-      font-weight: 500;
-      line-height: 1;
-      text-transform: uppercase;
-      margin: 20px 0;
-    }
-
-    .contact-panel h2 span {
-      color: var(--accent);
-    }
-
-    .contact-panel p {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.9;
-    }
-
-    .contact-details {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 20px;
-    }
-
-    .contact-row {
-      padding-bottom: 18px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .contact-row span {
-      display: block;
-      color: var(--accent);
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      text-transform: uppercase;
-      margin-bottom: 9px;
-    }
-
-    .contact-row a,
-    .contact-row strong {
-      font-size: 13px;
-      overflow-wrap: anywhere;
-    }
-
-    /* FOOTER */
-
-    footer {
-      padding: 35px 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .footer-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .footer-inner p {
-      color: var(--muted);
-      font-size: 10px;
-      line-height: 1.8;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    .footer-links a {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .footer-links a:hover {
-      color: var(--accent);
-    }
-
-    /* SCROLL REVEAL */
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(25px);
-      transition: opacity .7s ease, transform .7s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* RESPONSIVE */
-
-    @media(max-width: 950px) {
-      .nav-links {
-        gap: 15px;
-      }
-
-      .nav-links a {
-        font-size: 10px;
-      }
-
-      .hero-grid {
-        gap: 35px;
-      }
-
-      .about-grid {
-        gap: 35px;
-      }
-
-      .services-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media(max-width: 760px) {
-      .container,
-      .nav-inner {
-        width: min(100% - 36px, var(--max));
-      }
-
-      .nav-inner {
-        height: 68px;
-      }
-
-      .menu-toggle {
-        display: grid;
-      }
-
-      .nav-links {
-        display: none;
-        position: absolute;
-        top: 68px;
-        left: 0;
-        right: 0;
-        padding: 22px;
-        background: var(--surface);
-        border-bottom: 1px solid var(--border);
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0;
-      }
-
-      .nav-links.open {
-        display: flex;
-      }
-
-      .nav-links a {
-        padding: 14px 0;
-        font-size: 12px;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .hero {
-        padding: 125px 0 75px;
-        min-height: auto;
-      }
-
-      .hero-grid {
-        grid-template-columns: 1fr;
-        gap: 55px;
-      }
-
-      .hero h1 {
-        font-size: clamp(52px, 13vw, 78px);
-      }
-
-      .hero-visual {
-        width: 100%;
-      }
-
-      .photo-frame {
-        width: min(100%, 350px);
-      }
-
-      .photo-caption {
-        width: min(100%, 350px);
-      }
-
-      section.content-section {
-        padding: 80px 0;
-      }
-
-      .section-head {
-        display: block;
-        margin-bottom: 35px;
-      }
-
-      .section-head p {
-        margin-top: 20px;
-      }
-
-      .about-grid,
-      .systems-panel,
-      .contact-panel {
-        grid-template-columns: 1fr;
-        gap: 30px;
-      }
-
-      .about-number {
-        font-size: 85px;
-      }
-
-      .systems-panel,
-      .contact-panel {
-        padding: 30px 23px;
-      }
-
-      .process-item {
-        grid-template-columns: 45px 1fr;
-        gap: 12px;
-      }
-
-      .process-item p {
-        grid-column: 2;
-      }
-
-      .work-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .footer-inner {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-    }
-
-    @media(max-width: 480px) {
-      .services-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-meta {
-        gap: 20px;
-      }
-
-      .meta-item strong {
-        font-size: 21px;
-      }
-
-      .hero-description {
-        font-size: 13px;
-      }
-
-      .service-card {
-        min-height: 245px;
-      }
-
-      .work-card {
-        min-height: 260px;
-        padding: 25px;
-      }
-
-      .tool {
-        padding: 13px;
-        font-size: 10px;
-      }
-    }
-
-    @media(prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        scroll-behavior: auto !important;
-        animation-duration: .01ms !important;
-        transition-duration: .01ms !important;
-      }
-
-      .reveal {
-        opacity: 1;
-        transform: none;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f7fafb">
+<meta name="description" content="Raycee Tshabalala — web developer and builder of backend systems, agents, workflows, automations and custom tools.">
+<title>Raycee Tshabalala — Digital Systems & Development</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ice:#f7fafb;--ice-2:#edf2f4;--ice-3:#dfe7eb;--ink:#090a0b;
+  --ink-2:#11151a;--ink-3:#1b2229;--steel:#aebbc3;--cyan:#02d2e3;
+  --cyan-soft:rgba(2,210,227,.13);--line:rgba(9,10,11,.13);
+  --line-dark:rgba(255,255,255,.15);--muted:#5e6970;--white:#fff;
+  --display:"Oswald",Impact,sans-serif;--sans:"Space Grotesk",system-ui,sans-serif;
+  --mono:"DM Mono",monospace;--max:1440px;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:86px}
+body{margin:0;background:var(--ice);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.menu-open{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
+img{display:block;max-width:100%}
+::selection{background:var(--cyan);color:var(--ink)}
+.container{width:min(var(--max),calc(100% - 64px));margin-inline:auto}
+.mono,.eyebrow,.micro,.section-no{font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em}
+.eyebrow{font-size:11px;display:flex;align-items:center;gap:11px;color:var(--muted)}
+.eyebrow:before{content:"";width:24px;height:1px;background:currentColor}
+h1,h2,h3,p{margin-top:0}
+h1,h2,h3{font-family:var(--display);font-weight:600;text-transform:uppercase;letter-spacing:-.025em}
+p{line-height:1.8}
+.skip{position:absolute;left:-9999px;top:8px;background:var(--ink);color:white;padding:12px;z-index:999}
+.skip:focus{left:8px}
+.topbar{position:fixed;z-index:100;inset:0 0 auto;height:76px;border-bottom:1px solid rgba(9,10,11,.09);background:rgba(247,250,251,.76);backdrop-filter:blur(22px) saturate(165%);-webkit-backdrop-filter:blur(22px) saturate(165%)}
+.nav-inner{height:100%;width:min(var(--max),calc(100% - 64px));margin:auto;display:flex;align-items:center;justify-content:space-between}
+.wordmark{font:600 24px var(--display);letter-spacing:.02em}
+.wordmark span{color:#02aebe}
+.nav-center{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:36px}
+.nav-center a,.nav-cta{font-size:12px;font-weight:700;text-transform:uppercase;transition:color .15s var(--ease)}
+.nav-center a:hover,.nav-cta:hover{color:#009eae}
+.nav-cta{font-family:var(--mono);letter-spacing:.04em}
+.menu-button{display:none;border:1px solid var(--line);background:transparent;width:42px;height:42px;border-radius:50%;cursor:pointer}
+.menu-button span{display:block;width:16px;height:1px;background:var(--ink);margin:4px auto}
+.mobile-sheet{position:fixed;inset:0;z-index:150;background:var(--ice);padding:24px 28px;display:flex;flex-direction:column;transform:translateY(-102%);transition:transform .55s var(--ease)}
+.mobile-sheet.open{transform:translateY(0)}
+.sheet-top{display:flex;justify-content:space-between;align-items:center}
+.sheet-close{border:1px solid var(--line);border-radius:50%;width:44px;height:44px;background:transparent;font-size:24px;cursor:pointer}
+.sheet-links{display:flex;flex:1;flex-direction:column;justify-content:center;gap:12px}
+.sheet-links a{font:600 clamp(42px,10vw,76px) var(--display);text-transform:uppercase}
+.sheet-links a:hover{color:#00aebd}
+.hero{min-height:100svh;padding:112px 0 38px;position:relative;isolation:isolate;display:flex;align-items:stretch;background:var(--ice);overflow:hidden}
+.hero:after{content:"";position:absolute;inset:auto 0 0;height:22%;z-index:-1;background:linear-gradient(180deg,transparent,var(--ice))}
+.hero-inner{display:flex;flex-direction:column;justify-content:space-between;min-height:calc(100svh - 150px)}
+.hero-mast{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.hero-mast .micro{font-size:10px;color:var(--muted)}
+.hero-main{display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:7vw;padding:52px 0}
+.hero-id{position:relative;z-index:2}
+.driver-id{font:12px var(--mono);letter-spacing:.08em;color:var(--muted);margin-bottom:18px}
+.hero h1{font-size:clamp(74px,9.2vw,144px);line-height:.82;margin:0 0 28px;max-width:760px}
+.hero h1 span{display:block}
+.hero h1 .accent{color:#00b6c7}
+.hero-lead{max-width:570px;color:#56636a;font-size:15px;line-height:1.9;margin-bottom:28px}
+.hero-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.button{min-height:49px;padding:0 22px;display:inline-flex;align-items:center;justify-content:center;gap:16px;font-size:12px;font-weight:700;text-transform:uppercase;border:1px solid var(--ink);transition:background .25s,color .25s,border-color .25s}
+.button.dark{background:var(--ink);color:var(--white)}
+.button.dark:hover{background:var(--cyan);border-color:var(--cyan);color:var(--ink)}
+.button.outline:hover{border-color:var(--cyan);color:#008b99}
+.hero-photo-wrap{position:relative;justify-self:end;width:min(100%,460px);padding:10px;border:1px solid rgba(9,10,11,.16);background:rgba(255,255,255,.38)}
+.hero-photo-wrap:before,.hero-photo-wrap:after{content:"";position:absolute;width:38px;height:38px;border-color:var(--cyan);border-style:solid;z-index:2;pointer-events:none}
+.hero-photo-wrap:before{top:-1px;left:-1px;border-width:2px 0 0 2px}
+.hero-photo-wrap:after{right:-1px;bottom:-1px;border-width:0 2px 2px 0}
+.photo-glass{position:relative;overflow:hidden;aspect-ratio:4/5;background:linear-gradient(145deg,#e7eef1,#cbd7dc)}
+.photo-glass img{width:100%;height:100%;object-fit:cover;object-position:center 32%;filter:saturate(.82) contrast(1.02)}
+.photo-glass:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,rgba(255,255,255,.25),transparent 35%,transparent 68%,rgba(255,255,255,.12));mix-blend-mode:screen}
+.photo-meta{display:flex;align-items:center;justify-content:space-between;padding:16px 3px 5px;gap:15px}
+.photo-meta strong{font:500 22px var(--display);text-transform:uppercase}
+.photo-meta span{font:10px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;text-align:right}
+.hero-foot{display:flex;justify-content:space-between;align-items:end;gap:20px;border-top:1px solid var(--line);padding-top:20px}
+.hero-foot .availability{font:10px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.availability i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#269d75;margin-right:8px}
+.hero-stats{display:flex;gap:36px}
+.hero-stat strong{font:500 25px var(--display);display:block}
+.hero-stat span{font:9px var(--mono);letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+section.block{position:relative;padding:110px 0;overflow:hidden}
+.block-head{display:flex;justify-content:space-between;align-items:end;gap:35px;margin-bottom:55px}
+.section-no{font-size:10px;color:var(--muted);margin-bottom:15px}
+.block-head h2{font-size:clamp(54px,7vw,96px);line-height:.88;margin:0}
+.block-head p{max-width:410px;color:var(--muted);font-size:14px;margin:0}
+.dark-block{background:var(--ink);color:var(--white)}
+.dark-block .eyebrow,.dark-block .section-no{color:var(--steel)}
+.dark-block .block-head p{color:#aab5bc}
+.dark-block .glass-card{color:var(--white)}
+/* restrained iPhone-inspired liquid glass: translucent, layered, refractive edges; no glow */
+.glass-card{position:relative;isolation:isolate;overflow:hidden;border:1px solid rgba(255,255,255,.56);background:linear-gradient(145deg,rgba(255,255,255,.68),rgba(255,255,255,.24) 48%,rgba(255,255,255,.42));backdrop-filter:blur(28px) saturate(175%);-webkit-backdrop-filter:blur(28px) saturate(175%);box-shadow:inset 0 1px 0 rgba(255,255,255,.85),inset 0 -1px 0 rgba(255,255,255,.18),0 12px 32px rgba(19,34,42,.07)}
+.glass-card:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(118deg,rgba(255,255,255,.72) 0%,rgba(255,255,255,.08) 25%,transparent 48%,rgba(255,255,255,.22) 76%,rgba(255,255,255,.45) 100%);opacity:.8}
+.glass-card:after{content:"";position:absolute;inset:1px;border:1px solid rgba(255,255,255,.28);pointer-events:none}
+.dark-block .glass-card{border-color:rgba(255,255,255,.22);background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.055) 52%,rgba(255,255,255,.1));box-shadow:inset 0 1px 0 rgba(255,255,255,.24),inset 0 -1px 0 rgba(255,255,255,.08),0 12px 30px rgba(0,0,0,.12)}
+.dark-block .glass-card:before{background:linear-gradient(118deg,rgba(255,255,255,.2),rgba(255,255,255,.025) 28%,transparent 52%,rgba(255,255,255,.1))}
+.capability-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.capability{min-height:290px;padding:30px;transition:transform .35s var(--ease),border-color .25s}
+.capability:hover{transform:translateY(-5px);border-color:rgba(2,210,227,.75)}
+.capability .micro{font-size:10px;color:var(--cyan)}
+.capability h3{font-size:30px;line-height:1;margin:45px 0 16px}
+.capability p{font-size:13px;color:#aab5bc;max-width:340px;margin:0}
+.capability .number{position:absolute;right:26px;top:24px;font:11px var(--mono);color:rgba(255,255,255,.42)}
+.systems{background:var(--ice-2)}
+.system-layout{display:grid;grid-template-columns:1fr 1fr;gap:8vw;align-items:center}
+.system-layout h2{font-size:clamp(55px,7vw,96px);line-height:.86;margin:18px 0 25px}
+.system-layout h2 em{font-style:normal;color:#00aebe}
+.system-layout p{max-width:490px;color:var(--muted);font-size:14px}
+.system-list{border-top:1px solid var(--line)}
+.system-row{display:flex;justify-content:space-between;gap:20px;padding:19px 0;border-bottom:1px solid var(--line);font-size:13px;font-weight:600}
+.system-row span{font:11px var(--mono);color:#00aebe}
+.work-section{background:#11161b;color:white}
+.work-section .block-head p{color:#aab5bc}
+.work-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.work-card{min-height:340px;padding:30px;display:flex;flex-direction:column;justify-content:space-between;transition:transform .3s,border-color .3s}
+.work-card:hover{transform:translateY(-5px);border-color:rgba(2,210,227,.8)}
+.work-top{display:flex;justify-content:space-between;font:10px var(--mono);color:var(--cyan);text-transform:uppercase}
+.work-card h3{font-size:clamp(36px,4vw,58px);line-height:.95;margin:0 0 15px}
+.work-card p{font-size:13px;color:#bdc7cc;max-width:430px;margin:0}
+.work-link{display:inline-flex;margin-top:20px;color:var(--cyan);font:11px var(--mono);text-transform:uppercase;letter-spacing:.07em}
+.timeline{background:var(--ice);color:var(--ink)}
+.timeline-grid{display:grid;grid-template-columns:120px 1fr;gap:35px}
+.timeline-rail{position:relative;border-left:1px solid var(--line);margin-left:8px}
+.timeline-rail:before{content:"";position:absolute;left:-4px;top:0;width:7px;height:7px;background:var(--cyan);border-radius:1px}
+.timeline-entry{display:grid;grid-template-columns:100px 1fr;gap:28px;padding:0 0 42px 28px;position:relative}
+.timeline-entry:before{content:"";position:absolute;left:-4px;top:7px;width:7px;height:7px;background:var(--ice);border:1px solid var(--ink);border-radius:1px}
+.timeline-entry time{font:22px var(--display);color:#00aebe}
+.timeline-entry h3{font-size:25px;margin:0 0 9px}
+.timeline-entry p{color:var(--muted);font-size:13px;max-width:650px;margin:0}
+.stack{background:var(--ice-2)}
+.stack-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px}
+.stack-grid h2{font-size:clamp(55px,7vw,90px);line-height:.88;margin:18px 0 22px}
+.stack-grid p{color:var(--muted);font-size:14px;max-width:450px}
+.tech-cloud{display:flex;flex-wrap:wrap;gap:10px;align-content:center}
+.tech{padding:13px 16px;border:1px solid rgba(9,10,11,.14);background:rgba(255,255,255,.38);font:10px var(--mono);text-transform:uppercase;letter-spacing:.04em;transition:background .2s,border-color .2s}
+.tech:hover{background:rgba(255,255,255,.8);border-color:var(--cyan)}
+.contact{background:var(--ink);color:white;padding:110px 0 36px}
+.contact-panel{padding:clamp(28px,5vw,64px);display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center}
+.contact-panel h2{font-size:clamp(60px,8vw,112px);line-height:.83;margin:20px 0 25px}
+.contact-panel h2 span{color:var(--cyan)}
+.contact-panel p{color:#b4c0c6;font-size:14px;max-width:490px}
+.contact-details{display:grid;gap:22px}
+.contact-item{padding-bottom:17px;border-bottom:1px solid rgba(255,255,255,.18)}
+.contact-item span{display:block;color:var(--cyan);font:10px var(--mono);text-transform:uppercase;margin-bottom:8px}
+.contact-item a,.contact-item strong{font-size:13px;overflow-wrap:anywhere}
+.contact-item a:hover{color:var(--cyan)}
+.footer{display:flex;justify-content:space-between;align-items:center;gap:25px;padding-top:30px;margin-top:60px;border-top:1px solid rgba(255,255,255,.18)}
+.footer p{font:10px var(--mono);color:#9aa6ad;margin:0}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap}
+.footer-links a{font:10px var(--mono);color:#b8c2c8;text-transform:uppercase}
+.footer-links a:hover{color:var(--cyan)}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+@media(min-width:1280px){
+  .pin-stack{position:relative;background:var(--ink)}
+  .pin-layer{position:sticky;top:0;min-height:100svh;overflow:hidden}
+  .pin-layer .pin-inner{min-height:100svh;transform-origin:center}
+  .pin-layer[data-pin="hero"]{z-index:1}
+  .pin-layer[data-pin="expertise"]{z-index:2}
+  .pin-layer[data-pin="systems"]{z-index:3}
+  .pin-shade{position:absolute;inset:0;background:#090a0b;opacity:0;pointer-events:none}
+}
+@media(max-width:1100px){
+  .nav-center{gap:20px}
+  .hero-main{gap:4vw}
+  .capability-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:900px){
+  .container,.nav-inner{width:calc(100% - 40px)}
+  .nav-center,.nav-cta{display:none}
+  .menu-button{display:block}
+  .hero{min-height:auto;padding:105px 0 34px}
+  .hero-inner{min-height:auto;gap:50px}
+  .hero-main{grid-template-columns:1fr  .8fr;gap:28px;padding:45px 0}
+  .hero h1{font-size:clamp(64px,10vw,100px)}
+  .hero-photo-wrap{width:100%}
+  section.block{padding:85px 0}
+  .block-head{display:block}
+  .block-head p{margin-top:22px}
+  .system-layout,.stack-grid{gap:40px}
+  .contact-panel{gap:35px}
+}
+@media(max-width:640px){
+  .container,.nav-inner{width:calc(100% - 36px)}
+  .topbar{height:66px}
+  .hero{padding-top:94px}
+  .hero-main{grid-template-columns:1fr;gap:40px;padding:35px 0}
+  .hero h1{font-size:clamp(68px,16vw,100px)}
+  .hero-photo-wrap{justify-self:start;width:min(100%,390px);margin-inline:auto}
+  .hero-foot{align-items:flex-start;flex-direction:column}
+  .hero-stats{width:100%;justify-content:space-between;gap:12px}
+  .block-head h2{font-size:clamp(52px,14vw,76px)}
+  .capability-grid,.work-grid,.system-layout,.stack-grid,.contact-panel{grid-template-columns:1fr}
+  .capability{min-height:245px}
+  .capability h3{margin-top:35px}
+  .work-card{min-height:285px}
+  .timeline-grid{grid-template-columns:1fr}
+  .timeline-grid>.section-no{margin-bottom:-15px}
+  .timeline-entry{grid-template-columns:66px 1fr;gap:16px;padding-left:22px}
+  .timeline-entry time{font-size:19px}
+  .timeline-entry h3{font-size:21px}
+  .contact{padding-top:80px}
+  .contact-panel{padding:28px 22px}
+  .contact-panel h2{font-size:clamp(58px,15vw,86px)}
+  .footer{align-items:flex-start;flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
 </head>
-
 <body>
-  <div class="grid-bg"></div>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <div class="nav-inner">
+    <a class="wordmark" href="#home" aria-label="Raycee home">RAYCEE<span>.</span></a>
+    <nav class="nav-center" aria-label="Main navigation">
+      <a href="#expertise">Expertise</a><a href="#systems">Systems</a><a href="#work">Work</a><a href="#approach">Approach</a>
+    </nav>
+    <a class="nav-cta" href="#contact">[ Start a project → ]</a>
+    <button class="menu-button" id="menuOpen" aria-label="Open menu"><span></span><span></span></button>
+  </div>
+</header>
+<div class="mobile-sheet" id="mobileSheet" aria-hidden="true">
+  <div class="sheet-top"><a class="wordmark" href="#home">RAYCEE<span>.</span></a><button class="sheet-close" id="menuClose" aria-label="Close menu">×</button></div>
+  <nav class="sheet-links" aria-label="Mobile navigation">
+    <a href="#expertise">Expertise</a><a href="#systems">Systems</a><a href="#work">Selected work</a><a href="#approach">Approach</a><a href="#contact">Contact</a>
+  </nav>
+  <div class="micro">Independent developer · South Africa</div>
+</div>
 
-  <header class="nav">
-    <div class="nav-inner">
-      <a href="#home" class="brand">RAYCEE<span>.</span></a>
+<main id="main">
+  <div class="pin-stack">
+    <div class="pin-layer" data-pin="hero">
+      <div class="pin-inner">
+        <section class="hero" id="home">
+          <div class="container hero-inner">
+            <div class="hero-mast">
+              <div class="eyebrow">Independent developer / South Africa</div>
+              <div class="micro">Digital craft · 2026</div>
+            </div>
+            <div class="hero-main">
+              <div class="hero-id">
+                <div class="driver-id">RAYCEE TSHABALALA / DEVELOPER_001</div>
+                <h1>Build<br><span>with</span><span class="accent">intent.</span></h1>
+                <p class="hero-lead">I build considered digital experiences, dependable backend systems, purpose-built agents, connected workflows, automations and custom tools for real-world needs.</p>
+                <div class="hero-actions">
+                  <a class="button dark" href="#contact">Discuss a project <span>↗</span></a>
+                  <a class="button outline" href="#work">Explore selected work <span>↓</span></a>
+                </div>
+              </div>
+              <div class="hero-photo-wrap">
+                <div class="photo-glass">
+                  <img src="./WhatsApp%20Image%202026-04-05%20at%2002.50.12.jpeg" alt="Portrait of Raycee Tshabalala" onerror="this.style.opacity='0';this.parentElement.style.background='linear-gradient(145deg,#dce6e9,#bac9d0)';">
+                </div>
+                <div class="photo-meta"><strong>Raycee Tshabalala</strong><span>Developer<br>Systems builder</span></div>
+              </div>
+            </div>
+            <div class="hero-foot">
+              <div class="availability"><i></i> Building useful digital systems</div>
+              <div class="hero-stats">
+                <div class="hero-stat"><strong>01</strong><span>Web development</span></div>
+                <div class="hero-stat"><strong>02</strong><span>Backend engineering</span></div>
+                <div class="hero-stat"><strong>03</strong><span>Agents & automation</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div><div class="pin-shade"></div>
+    </div>
 
-      <nav class="nav-links" id="navLinks">
-        <a href="#about">About</a>
-        <a href="#services">Services</a>
-        <a href="#systems">Systems</a>
-        <a href="#process">Process</a>
-        <a href="#work">Work</a>
-        <a href="#contact">Contact</a>
-      </nav>
+    <div class="pin-layer" data-pin="expertise">
+      <div class="pin-inner">
+        <section class="block dark-block" id="expertise">
+          <div class="container">
+            <div class="block-head reveal">
+              <div><div class="section-no">01 / Capabilities</div><h2>What I<br>engineer.</h2></div>
+              <p>From the first interface to the infrastructure behind it, I work across the layers that make a digital product useful, coherent and dependable.</p>
+            </div>
+            <div class="capability-grid">
+              <article class="capability glass-card reveal"><div class="number">01</div><div class="micro">Interface / Experience</div><h3>Web development</h3><p>Responsive business websites, landing pages, interactive interfaces and web applications shaped around clarity, usability and performance.</p></article>
+              <article class="capability glass-card reveal"><div class="number">02</div><div class="micro">Infrastructure / Logic</div><h3>Backend & APIs</h3><p>Server-side applications, REST APIs, authentication, data models, integrations and the logic that powers digital products.</p></article>
+              <article class="capability glass-card reveal"><div class="number">03</div><div class="micro">Orchestration / Agents</div><h3>Agents & workflows</h3><p>Purpose-built agents and connected workflows that coordinate tasks, use tools, move information and support practical operations.</p></article>
+              <article class="capability glass-card reveal"><div class="number">04</div><div class="micro">Operations / Efficiency</div><h3>Automation</h3><p>Business process automation, notifications, service connections and repeatable workflows that reduce manual work.</p></article>
+              <article class="capability glass-card reveal"><div class="number">05</div><div class="micro">Purpose-built / Utility</div><h3>Custom tools</h3><p>Dashboards, internal utilities, management interfaces and focused software designed around a specific business requirement.</p></article>
+              <article class="capability glass-card reveal"><div class="number">06</div><div class="micro">Delivery / Infrastructure</div><h3>Hosting & deployment</h3><p>Application configuration, hosting setup, domain connection, deployment workflows and production-oriented delivery.</p></article>
+            </div>
+          </div>
+        </section>
+      </div><div class="pin-shade"></div>
+    </div>
 
-      <div class="nav-actions">
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle colour theme">☼</button>
-        <button class="menu-toggle" id="menuToggle" aria-label="Open navigation">☰</button>
+    <div class="pin-layer" data-pin="systems">
+      <div class="pin-inner">
+        <section class="block systems" id="systems">
+          <div class="container system-layout">
+            <div class="reveal">
+              <div class="section-no">02 / Connected systems</div>
+              <h2>Not just<br>components.<br><em>One system.</em></h2>
+              <p>A strong digital product is more than a collection of screens. I think about how the interface, backend, data, tools and workflows connect — then build around the complete experience.</p>
+              <a class="button dark" href="#approach" style="margin-top:18px">How I work <span>↗</span></a>
+            </div>
+            <div class="system-list reveal">
+              <div class="system-row">Digital interfaces <span>01 / UI</span></div>
+              <div class="system-row">Backend services & APIs <span>02 / CORE</span></div>
+              <div class="system-row">Agents & tool orchestration <span>03 / AGENT</span></div>
+              <div class="system-row">Automated workflows <span>04 / FLOW</span></div>
+              <div class="system-row">Data & business utilities <span>05 / DATA</span></div>
+              <div class="system-row">Deployment & hosting <span>06 / LIVE</span></div>
+            </div>
+          </div>
+        </section>
+      </div><div class="pin-shade"></div>
+    </div>
+  </div>
+
+  <section class="block work-section" id="work">
+    <div class="container">
+      <div class="block-head reveal">
+        <div><div class="section-no">03 / Selected work</div><h2>Built with<br>purpose.</h2></div>
+        <p>A selection of platforms, concepts and systems that reflect my approach to digital development. Project descriptions distinguish live platforms from concepts and areas of ongoing work.</p>
+      </div>
+      <div class="work-grid">
+        <article class="work-card glass-card reveal"><div class="work-top"><span>01 / Digital initiative</span><span>ROASOD</span></div><div><h3>ROASOD</h3><p>A digital development initiative focused on professional websites, business solutions, useful tools and connected digital systems.</p><a class="work-link" href="https://roasod.vercel.app/" target="_blank" rel="noopener noreferrer">Visit ROASOD ↗</a></div></article>
+        <article class="work-card glass-card reveal"><div class="work-top"><span>02 / Platform concept</span><span>VINCUNEX</span></div><div><h3>Vincunex</h3><p>A directory platform concept designed to connect organisations and communities through a structured digital experience.</p><span class="work-link">Platform concept</span></div></article>
+        <article class="work-card glass-card reveal"><div class="work-top"><span>03 / Systems engineering</span><span>AGENTS</span></div><div><h3>Agents & workflows</h3><p>Purpose-built agent systems and connected workflows designed to coordinate actions, integrate services and streamline repeatable processes.</p><span class="work-link">Workflow engineering</span></div></article>
+        <article class="work-card glass-card reveal"><div class="work-top"><span>04 / Custom software</span><span>TOOLS</span></div><div><h3>Business tools</h3><p>Focused software, internal dashboards and custom utilities shaped around practical operational requirements.</p><span class="work-link">Custom development</span></div></article>
       </div>
     </div>
-  </header>
+  </section>
 
-  <main>
-    <!-- HERO -->
-    <section class="hero" id="home">
-      <div class="glow hero-glow"></div>
-
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <div class="eyebrow">Independent Developer · South Africa</div>
-
-          <h1>
-            Building<br>
-            Digital <span>Systems.</span>
-          </h1>
-
-          <p class="hero-description">
-            I'm Raycee Tshabalala — a developer and digital systems builder.
-            I create professional websites, powerful backend solutions,
-            intelligent agents, automated workflows and custom tools that
-            help businesses operate and grow.
-          </p>
-
-          <div class="hero-buttons">
-            <a href="#contact" class="btn btn-primary">Start a Project ↗</a>
-            <a href="#work" class="btn btn-outline">Explore My Work</a>
-          </div>
-
-          <div class="hero-meta">
-            <div class="meta-item">
-              <strong>Web</strong>
-              <span>Development</span>
-            </div>
-
-            <div class="meta-item">
-              <strong>Backend</strong>
-              <span>Engineering</span>
-            </div>
-
-            <div class="meta-item">
-              <strong>Systems</strong>
-              <span>Automation & Tools</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- YOUR PROFILE PHOTO -->
-        <div class="hero-visual">
-          <div class="photo-frame">
-            <div class="photo-corner top-left"></div>
-            <div class="photo-corner bottom-right"></div>
-
-            <img
-              src="./WhatsApp%20Image%202026-04-05%20at%2002.50.12.jpeg"
-              alt="Portrait of Raycee Tshabalala"
-              onerror="this.style.opacity='0'; console.error('Profile photo not found. Check the image filename and folder location.');"
-            >
-          </div>
-
-          <div class="photo-caption">
-            <h3>Raycee Tshabalala</h3>
-            <span>Developer / Builder</span>
-          </div>
-
-          <div class="availability">
-            <i></i>
-            Building digital solutions
-          </div>
-        </div>
+  <section class="block timeline" id="approach">
+    <div class="container">
+      <div class="block-head reveal">
+        <div><div class="section-no">04 / Working method</div><h2>From brief<br>to build.</h2></div>
+        <p>A deliberate process keeps the work aligned with the actual problem — from defining what matters to refining and delivering the finished solution.</p>
       </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section class="content-section" id="about">
-      <div class="container">
-        <div class="section-head reveal">
-          <div>
-            <div class="eyebrow">01 / About Me</div>
-            <h2>Beyond the<br>Interface.</h2>
-          </div>
-
-          <p>
-            I focus on creating digital products that are not only visually
-            refined, but functional, structured and built with purpose.
-          </p>
+      <div class="timeline-grid">
+        <div class="section-no">The process / 05 steps</div>
+        <div class="timeline-rail">
+          <article class="timeline-entry reveal"><time>01</time><div><h3>Discover</h3><p>Clarify the objective, intended users, constraints and the problem the project needs to solve.</p></div></article>
+          <article class="timeline-entry reveal"><time>02</time><div><h3>Structure</h3><p>Plan the information architecture, user journey, technical approach and system boundaries.</p></div></article>
+          <article class="timeline-entry reveal"><time>03</time><div><h3>Develop</h3><p>Build the interface, backend, integrations, agent logic, workflows and supporting tools.</p></div></article>
+          <article class="timeline-entry reveal"><time>04</time><div><h3>Refine</h3><p>Test the experience, resolve issues, improve accessibility and optimise the implementation.</p></div></article>
+          <article class="timeline-entry reveal"><time>05</time><div><h3>Deliver</h3><p>Prepare deployment, hosting and handover, with a clear path for future improvements.</p></div></article>
         </div>
-
-        <div class="about-grid reveal">
-          <div class="about-number">01—</div>
-
-          <div class="about-copy">
-            <h3>
-              I turn ideas into practical digital experiences and connected systems.
-            </h3>
-
-            <p>
-              My work spans frontend development, backend engineering,
-              business websites, custom tools and digital infrastructure.
-              I approach every project with an emphasis on usability,
-              performance, maintainability and a professional finish.
-            </p>
-
-            <p>
-              Beyond conventional web development, I build agents,
-              workflows and automations that connect services, simplify
-              processes and reduce repetitive work. The objective is
-              straightforward: build technology that serves a real purpose.
-            </p>
-
-            <div class="about-tags">
-              <span class="tag">Web Developer</span>
-              <span class="tag">Backend Developer</span>
-              <span class="tag">Systems Builder</span>
-              <span class="tag">Agent & Workflow Developer</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SERVICES -->
-    <section class="content-section" id="services">
-      <div class="container">
-        <div class="section-head reveal">
-          <div>
-            <div class="eyebrow">02 / Capabilities</div>
-            <h2>What I Build.</h2>
-          </div>
-
-          <p>
-            A combination of engineering, design and systems thinking
-            to deliver complete digital solutions.
-          </p>
-        </div>
-
-        <div class="services-grid">
-          <article class="service-card reveal">
-            <span class="service-number">01 / FRONTEND</span>
-            <span class="service-arrow">↗</span>
-            <h3>Web Development</h3>
-            <p>
-              Responsive business websites, professional landing pages,
-              interactive interfaces, web applications and polished
-              digital experiences.
-            </p>
-          </article>
-
-          <article class="service-card reveal">
-            <span class="service-number">02 / BACKEND</span>
-            <span class="service-arrow">↗</span>
-            <h3>Backend & APIs</h3>
-            <p>
-              Server-side systems, REST APIs, authentication, databases,
-              integrations and the infrastructure that powers applications.
-            </p>
-          </article>
-
-          <article class="service-card reveal">
-            <span class="service-number">03 / AGENT SYSTEMS</span>
-            <span class="service-arrow">↗</span>
-            <h3>Agents & Workflows</h3>
-            <p>
-              Purpose-built agents, connected workflows, process orchestration,
-              service integrations and practical business automations.
-            </p>
-          </article>
-
-          <article class="service-card reveal">
-            <span class="service-number">04 / AUTOMATION</span>
-            <span class="service-arrow">↗</span>
-            <h3>Business Automation</h3>
-            <p>
-              Automated operations, notifications, data handling,
-              communication workflows and integrations that reduce
-              repetitive tasks.
-            </p>
-          </article>
-
-          <article class="service-card reveal">
-            <span class="service-number">05 / CUSTOM SOFTWARE</span>
-            <span class="service-arrow">↗</span>
-            <h3>Custom Tools</h3>
-            <p>
-              Internal business tools, dashboards, management interfaces,
-              calculators and purpose-built software for specific needs.
-            </p>
-          </article>
-
-          <article class="service-card reveal">
-            <span class="service-number">06 / INFRASTRUCTURE</span>
-            <span class="service-arrow">↗</span>
-            <h3>Hosting & Deployment</h3>
-            <p>
-              Deployment workflows, hosting configuration, application
-              setup, domain integration and production-oriented delivery.
-            </p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- SYSTEMS -->
-    <section class="content-section" id="systems">
-      <div class="container">
-        <div class="systems-panel reveal">
-          <div>
-            <div class="eyebrow">03 / Connected Solutions</div>
-
-            <h3>
-              More than separate tools.
-              <span>Connected systems.</span>
-            </h3>
-
-            <p>
-              I approach digital projects as connected systems.
-              Websites, APIs, databases, agents, workflows and tools
-              can work together to create a more efficient operation.
-            </p>
-          </div>
-
-          <ul class="system-list">
-            <li>Web interfaces <span>↗</span></li>
-            <li>Backend infrastructure <span>↗</span></li>
-            <li>Agents & orchestration <span>↗</span></li>
-            <li>Automated workflows <span>↗</span></li>
-            <li>Custom business tools <span>↗</span></li>
-            <li>Third-party integrations <span>↗</span></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROCESS -->
-    <section class="content-section" id="process">
-      <div class="container">
-        <div class="section-head reveal">
-          <div>
-            <div class="eyebrow">04 / Methodology</div>
-            <h2>How I Work.</h2>
-          </div>
-
-          <p>
-            A structured approach that takes an idea from initial
-            requirements to a usable digital solution.
-          </p>
-        </div>
-
-        <div class="process-list reveal">
-          <div class="process-item">
-            <span class="step">01</span>
-            <h3>Discover</h3>
-            <p>Understand the objective, requirements, audience and problem that needs solving.</p>
-          </div>
-
-          <div class="process-item">
-            <span class="step">02</span>
-            <h3>Architect</h3>
-            <p>Plan the structure, user experience, technical approach and system components.</p>
-          </div>
-
-          <div class="process-item">
-            <span class="step">03</span>
-            <h3>Develop</h3>
-            <p>Build the interface, backend, integrations, workflows and required functionality.</p>
-          </div>
-
-          <div class="process-item">
-            <span class="step">04</span>
-            <h3>Refine</h3>
-            <p>Test functionality, improve usability, resolve issues and optimise performance.</p>
-          </div>
-
-          <div class="process-item">
-            <span class="step">05</span>
-            <h3>Deploy</h3>
-            <p>Prepare the project for delivery, hosting and continued development.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- WORK -->
-    <section class="content-section" id="work">
-      <div class="container">
-        <div class="section-head reveal">
-          <div>
-            <div class="eyebrow">05 / Selected Work</div>
-            <h2>Projects & Concepts.</h2>
-          </div>
-
-          <p>
-            A selection of digital projects, platforms and systems
-            that represent my development direction.
-          </p>
-        </div>
-
-        <div class="work-grid">
-          <article class="work-card reveal">
-            <div class="work-top">
-              <span>01 / Digital Platform</span>
-              <span>ROASOD</span>
-            </div>
-
-            <div>
-              <h3>ROASOD</h3>
-              <p>
-                A digital development initiative focused on websites,
-                business solutions, tools and connected digital systems.
-              </p>
-              <a class="work-link" href="https://roasod.vercel.app/" target="_blank" rel="noopener noreferrer">
-                Visit Project ↗
-              </a>
-            </div>
-          </article>
-
-          <article class="work-card reveal">
-            <div class="work-top">
-              <span>02 / Web Concept</span>
-              <span>VINCUNEX</span>
-            </div>
-
-            <div>
-              <h3>Vincunex</h3>
-              <p>
-                A digital directory concept designed around bringing
-                organisations and communities together through a
-                structured online platform.
-              </p>
-              <span class="work-link">Platform Concept</span>
-            </div>
-          </article>
-
-          <article class="work-card reveal">
-            <div class="work-top">
-              <span>03 / Automation</span>
-              <span>AGENT SYSTEMS</span>
-            </div>
-
-            <div>
-              <h3>Agents & Workflows</h3>
-              <p>
-                Connected agent systems and automated workflows designed
-                to coordinate tasks, integrate services and simplify operations.
-              </p>
-              <span class="work-link">Systems Development</span>
-            </div>
-          </article>
-
-          <article class="work-card reveal">
-            <div class="work-top">
-              <span>04 / Software</span>
-              <span>CUSTOM TOOLS</span>
-            </div>
-
-            <div>
-              <h3>Business Tools</h3>
-              <p>
-                Purpose-built tools and application interfaces designed
-                around practical business requirements and operational needs.
-              </p>
-              <span class="work-link">Custom Development</span>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- TOOLKIT -->
-    <section class="content-section" id="toolkit">
-      <div class="container">
-        <div class="section-head reveal">
-          <div>
-            <div class="eyebrow">06 / Technical Toolkit</div>
-            <h2>Tools of the Trade.</h2>
-          </div>
-
-          <p>
-            Technologies and platforms used across web development,
-            backend engineering, integrations and deployment.
-          </p>
-        </div>
-
-        <div class="toolkit reveal">
-          <span class="tool">HTML5</span>
-          <span class="tool">CSS3</span>
-          <span class="tool">JavaScript</span>
-          <span class="tool">React</span>
-          <span class="tool">Node.js</span>
-          <span class="tool">Python</span>
-          <span class="tool">C# / .NET</span>
-          <span class="tool">REST APIs</span>
-          <span class="tool">SQL</span>
-          <span class="tool">SQLite</span>
-          <span class="tool">Git</span>
-          <span class="tool">GitHub</span>
-          <span class="tool">Vercel</span>
-          <span class="tool">Render</span>
-          <span class="tool">API Integrations</span>
-          <span class="tool">Agent Systems</span>
-          <span class="tool">Workflow Automation</span>
-          <span class="tool">Custom Tools</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="content-section" id="faq">
-      <div class="container">
-        <div class="section-head reveal">
-          <div>
-            <div class="eyebrow">07 / Frequently Asked</div>
-            <h2>Good Questions.</h2>
-          </div>
-
-          <p>
-            A few useful details about the way I approach projects
-            and the solutions I build.
-          </p>
-        </div>
-
-        <div class="faq-list reveal">
-          <div class="faq-item">
-            <button class="faq-question">
-              What type of projects do you work on?
-              <span>+</span>
-            </button>
-            <div class="faq-answer">
-              I work on business websites, web applications, backend systems,
-              APIs, agents, workflows, automations and custom software tools.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <button class="faq-question">
-              Can you build a complete business website?
-              <span>+</span>
-            </button>
-            <div class="faq-answer">
-              Yes. A project can include the frontend, backend functionality,
-              integrations, database requirements and deployment setup,
-              depending on its scope.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <button class="faq-question">
-              Do you build agents and automated workflows?
-              <span>+</span>
-            </button>
-            <div class="faq-answer">
-              Yes. I build purpose-specific agents, connected workflows,
-              service integrations and automations designed around
-              practical operational requirements.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <button class="faq-question">
-              Can you create a custom tool for my business?
-              <span>+</span>
-            </button>
-            <div class="faq-answer">
-              Yes. Custom tools can include dashboards, management interfaces,
-              internal utilities, data-handling systems and other
-              purpose-built applications.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section class="content-section" id="contact">
-      <div class="container">
-        <div class="contact-panel reveal">
-          <div>
-            <div class="eyebrow">08 / Start a Conversation</div>
-
-            <h2>
-              Have an idea?<br>
-              Let's <span>build it.</span>
-            </h2>
-
-            <p>
-              Whether you need a website, backend solution, agent,
-              automated workflow or custom tool, let's discuss
-              what you're looking to create.
-            </p>
-
-            <div style="margin-top:30px">
-              <a
-                class="btn btn-primary"
-                href="mailto:rayceeblaccreedtshabalala@gmail.com?subject=Project%20Enquiry"
-              >
-                Discuss a Project ↗
-              </a>
-            </div>
-          </div>
-
-          <div class="contact-details">
-            <div class="contact-row">
-              <span>Email</span>
-              <a href="mailto:rayceeblaccreedtshabalala@gmail.com">
-                rayceeblaccreedtshabalala@gmail.com
-              </a>
-            </div>
-
-            <div class="contact-row">
-              <span>Portfolio</span>
-              <a href="https://raycee.vercel.app/" target="_blank" rel="noopener noreferrer">
-                raycee.vercel.app ↗
-              </a>
-            </div>
-
-            <div class="contact-row">
-              <span>Organisation</span>
-              <a href="https://roasod.vercel.app/" target="_blank" rel="noopener noreferrer">
-                ROASOD ↗
-              </a>
-            </div>
-
-            <div class="contact-row">
-              <span>Location</span>
-              <strong>South Africa</strong>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="container footer-inner">
-      <div>
-        <a href="#home" class="brand">RAYCEE<span>.</span></a>
-        <p>© <span id="year"></span> Raycee Tshabalala. All rights reserved.</p>
-      </div>
-
-      <div class="footer-links">
-        <a href="#about">About</a>
-        <a href="#services">Services</a>
-        <a href="#work">Work</a>
-        <a href="#contact">Contact</a>
-        <a href="https://roasod.vercel.app/" target="_blank" rel="noopener noreferrer">ROASOD ↗</a>
       </div>
     </div>
-  </footer>
+  </section>
 
-  <script>
-    // Current year
-    document.getElementById("year").textContent =
-      new Date().getFullYear();
+  <section class="block stack" id="toolkit">
+    <div class="container stack-grid">
+      <div class="reveal">
+        <div class="section-no">05 / Technical toolkit</div>
+        <h2>The tools<br>behind the work.</h2>
+        <p>Technologies and platforms used across frontend development, backend engineering, integrations, deployment and workflow construction. The exact stack is selected to suit each project's requirements.</p>
+      </div>
+      <div class="tech-cloud reveal">
+        <span class="tech">HTML5</span><span class="tech">CSS3</span><span class="tech">JavaScript</span><span class="tech">React</span><span class="tech">Node.js</span><span class="tech">Python</span><span class="tech">C# / .NET</span><span class="tech">REST APIs</span><span class="tech">SQL</span><span class="tech">SQLite</span><span class="tech">Git</span><span class="tech">GitHub</span><span class="tech">Vercel</span><span class="tech">Render</span><span class="tech">API integrations</span><span class="tech">Agent systems</span><span class="tech">Workflow automation</span><span class="tech">Custom tools</span>
+      </div>
+    </div>
+  </section>
 
-    // Mobile navigation
-    const menuToggle = document.getElementById("menuToggle");
-    const navLinks = document.getElementById("navLinks");
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="contact-panel glass-card reveal">
+        <div>
+          <div class="eyebrow">06 / Start a conversation</div>
+          <h2>Let's make<br>it <span>work.</span></h2>
+          <p>Have a website, backend system, agent, workflow, automation or custom tool in mind? Tell me what you are trying to achieve and let's shape the right solution.</p>
+          <a class="button dark" style="margin-top:25px" href="mailto:rayceeblaccreedtshabalala@gmail.com?subject=Project%20Enquiry">Discuss a project <span>↗</span></a>
+        </div>
+        <div class="contact-details">
+          <div class="contact-item"><span>Email</span><a href="mailto:rayceeblaccreedtshabalala@gmail.com">rayceeblaccreedtshabalala@gmail.com</a></div>
+          <div class="contact-item"><span>Portfolio</span><a href="https://raycee.vercel.app/" target="_blank" rel="noopener noreferrer">raycee.vercel.app ↗</a></div>
+          <div class="contact-item"><span>Studio / Initiative</span><a href="https://roasod.vercel.app/" target="_blank" rel="noopener noreferrer">ROASOD ↗</a></div>
+          <div class="contact-item"><span>Based in</span><strong>South Africa</strong></div>
+        </div>
+      </div>
+      <footer class="footer">
+        <p>© <span id="year"></span> RAYCEE TSHABALALA. ALL RIGHTS RESERVED.</p>
+        <div class="footer-links"><a href="#home">Back to top ↑</a><a href="#expertise">Expertise</a><a href="#work">Work</a><a href="mailto:rayceeblaccreedtshabalala@gmail.com">Email</a></div>
+      </footer>
+    </div>
+  </section>
+</main>
 
-    menuToggle.addEventListener("click", () => {
-      navLinks.classList.toggle("open");
-      menuToggle.textContent =
-        navLinks.classList.contains("open") ? "×" : "☰";
+<script>
+history.scrollRestoration = "manual";
+window.scrollTo(0, 0);
+document.getElementById("year").textContent = new Date().getFullYear();
+
+const sheet = document.getElementById("mobileSheet");
+const openButton = document.getElementById("menuOpen");
+const closeButton = document.getElementById("menuClose");
+function openMenu(){
+  sheet.classList.add("open");
+  sheet.setAttribute("aria-hidden","false");
+  document.body.classList.add("menu-open");
+  closeButton.focus();
+}
+function closeMenu(){
+  sheet.classList.remove("open");
+  sheet.setAttribute("aria-hidden","true");
+  document.body.classList.remove("menu-open");
+  openButton.focus();
+}
+openButton.addEventListener("click",openMenu);
+closeButton.addEventListener("click",closeMenu);
+sheet.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{
+  sheet.classList.remove("open");
+  sheet.setAttribute("aria-hidden","true");
+  document.body.classList.remove("menu-open");
+}));
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&sheet.classList.contains("open"))closeMenu()});
+
+const revealObserver = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add("in");
+      revealObserver.unobserve(entry.target);
+    }
+  });
+},{threshold:.12,rootMargin:"0px 0px -7% 0px"});
+document.querySelectorAll(".reveal").forEach(el=>revealObserver.observe(el));
+
+/* Sticky stack recedes under the next block on wide screens. */
+if(window.matchMedia("(min-width: 1280px)").matches && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+  const pinned=[...document.querySelectorAll(".pin-layer")].map(layer=>({
+    inner:layer.querySelector(".pin-inner"),
+    shade:layer.querySelector(".pin-shade"),
+    next:layer.nextElementSibling
+  }));
+  let queued=false;
+  const applyStack=()=>{
+    const vh=window.innerHeight||1;
+    pinned.forEach(({inner,shade,next})=>{
+      if(!next)return;
+      const progress=Math.min(1,Math.max(0,1-next.getBoundingClientRect().top/vh));
+      inner.style.transform=progress>0?`scale(${1-.1*progress})`:"";
+      inner.style.willChange=progress>0?"transform":"";
+      shade.style.opacity=String(.55*progress);
+      inner.style.visibility=progress>=1?"hidden":"visible";
     });
-
-    navLinks.querySelectorAll("a").forEach(link => {
-      link.addEventListener("click", () => {
-        navLinks.classList.remove("open");
-        menuToggle.textContent = "☰";
-      });
-    });
-
-    // Dark / light mode
-    const themeToggle = document.getElementById("themeToggle");
-
-    themeToggle.addEventListener("click", () => {
-      document.body.classList.toggle("light");
-
-      const isLight =
-        document.body.classList.contains("light");
-
-      themeToggle.textContent = isLight ? "☾" : "☼";
-      document.querySelector('meta[name="theme-color"]')
-        .setAttribute("content", isLight ? "#f4f7f8" : "#080b0e");
-    });
-
-    // FAQ accordion
-    document.querySelectorAll(".faq-question").forEach(button => {
-      button.addEventListener("click", () => {
-        const item = button.closest(".faq-item");
-        const isActive = item.classList.contains("active");
-
-        document.querySelectorAll(".faq-item").forEach(other => {
-          other.classList.remove("active");
-          other.querySelector(".faq-question span").textContent = "+";
-        });
-
-        if (!isActive) {
-          item.classList.add("active");
-          button.querySelector("span").textContent = "−";
-        }
-      });
-    });
-
-    // Scroll reveal
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.12
-    });
-
-    document.querySelectorAll(".reveal").forEach(element => {
-      observer.observe(element);
-    });
-  </script>
+    queued=false;
+  };
+  const requestStack=()=>{if(!queued){queued=true;requestAnimationFrame(applyStack)}};
+  window.addEventListener("scroll",requestStack,{passive:true});
+  window.addEventListener("resize",requestStack);
+  requestStack();
+}
+</script>
 </body>
 </html>
+'''
+
+readme = """# Raycee — Liquid Glass Portfolio
+
+## Files
+- `index.html` — complete single-file responsive portfolio.
+- Add your portrait image beside `index.html` using this exact filename:
+  `WhatsApp Image 2026-04-05 at 02.50.12.jpeg`
+
+## Run locally
+Open `index.html` in a browser, or use VS Code Live Server.
+
+## Deploy
+Upload the folder to a GitHub repository and deploy it with Vercel as a static site.
+No build command or framework is required.
+
+## Design direction
+The layout adapts the supplied KIMI / GRIDO1 reference's editorial structure:
+ice-white canvas, ink-black sections, Oswald + Space Grotesk typography,
+cyan details, a layered sticky opening sequence, and a restrained iPhone-inspired
+liquid-glass treatment for selected cards.
+
+The previous ambient glow blobs and neon glow effects have been removed.
+Glass is expressed through translucency, backdrop blur, layered highlights,
+subtle refraction-like gradients and fine borders instead.
+
+## Content positioning
+The portfolio describes web development, backend engineering, agents,
+workflows, automations, hosting and custom tools. It does not describe Raycee
+as an AI product or chatbot builder.
+
+The contact CTA uses `mailto:` and does not store form submissions in a database.
+"""
+
+(out / "index.html").write_text(html, encoding="utf-8")
+(out / "README.md").write_text(readme, encoding="utf-8")
+zip_path = Path("/mnt/data/Raycee_Liquid_Glass_Portfolio.zip")
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+    z.write(out / "index.html", "Raycee_Liquid_Glass_Portfolio/index.html")
+    z.write(out / "README.md", "Raycee_Liquid_Glass_Portfolio/README.md")
+
+print("Created:", zip_path)
+print("HTML bytes:", len(html.encode("utf-8")))
